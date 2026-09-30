@@ -18,10 +18,15 @@ function buildUrl(c: Credentials, method: string, ...tail: (string | number)[]) 
   return `${base}/waInstance${encodeURIComponent(c.idInstance)}/${path}`
 }
 
-async function request<T>(url: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(url, init)
+const REQUEST_TIMEOUT = 15_000
+
+/** Every request has a timeout, otherwise a hung server would block the send button forever. */
+async function request<T>(url: string, init: RequestInit = {}, timeout = REQUEST_TIMEOUT): Promise<T> {
+  const timeoutSignal = AbortSignal.timeout(timeout)
+  const signal = init.signal ? AbortSignal.any([init.signal, timeoutSignal]) : timeoutSignal
+  const res = await fetch(url, { ...init, signal })
   if (!res.ok) throw new ApiError(res.status, `GREEN-API: HTTP ${res.status}`)
-  // Пустая очередь уведомлений приходит как `null` — JSON.parse справится, а .json() на пустом теле упадёт.
+  // An empty notification queue arrives as `null` — JSON.parse handles it, while .json() throws on an empty body.
   const text = await res.text()
   return (text ? JSON.parse(text) : null) as T
 }
@@ -35,18 +40,21 @@ export function sendMessage(c: Credentials, chatId: string, message: string, sig
   })
 }
 
-/** Long polling: сервер держит соединение до `receiveTimeout` секунд. Пустая очередь → null. */
+/** Long polling: the server holds the connection for up to `receiveTimeout` seconds. Empty queue → null. */
 export function receiveNotification(c: Credentials, signal?: AbortSignal, receiveTimeout = 5) {
-  return request<Notification | null>(`${buildUrl(c, 'receiveNotification')}?receiveTimeout=${receiveTimeout}`, {
-    signal,
-  })
+  return request<Notification | null>(
+    `${buildUrl(c, 'receiveNotification')}?receiveTimeout=${receiveTimeout}`,
+    { signal },
+    // The server may hold the connection for receiveTimeout seconds — the client timeout must be longer.
+    REQUEST_TIMEOUT + receiveTimeout * 1000,
+  )
 }
 
 export function deleteNotification(c: Credentials, receiptId: number) {
   return request<{ result: boolean }>(buildUrl(c, 'deleteNotification', receiptId), { method: 'DELETE' })
 }
 
-/** Проверка ключей: getSettings вернёт 200 только для валидной пары id/token. */
+/** Credentials check: getSettings returns 200 only for a valid id/token pair. */
 export function checkCredentials(c: Credentials, signal?: AbortSignal) {
   return request<unknown>(buildUrl(c, 'getSettings'), { signal })
 }

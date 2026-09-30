@@ -1,7 +1,7 @@
 export interface Credentials {
   idInstance: string
   apiTokenInstance: string
-  /** Хост инстанса из консоли GREEN-API, например https://7103.api.green-api.com */
+  /** Instance host from the GREEN-API console, e.g. https://7103.api.green-api.com */
   apiUrl: string
 }
 
@@ -9,7 +9,7 @@ export interface SendMessageResponse {
   idMessage: string
 }
 
-/** Уведомление из очереди ReceiveNotification (нас интересует только входящий текст). */
+/** Notification from the ReceiveNotification queue (only text messages matter to us). */
 export interface Notification {
   receiptId: number
   body: {
