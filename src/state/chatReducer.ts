@@ -7,7 +7,7 @@ export type Action =
   | { type: 'selectChat'; chatId: string }
   | { type: 'addOutgoing'; chatId: string; message: Message }
   | {
-      type: 'addIncoming'
+      type: 'receiveMessage'
       chatId: string
       senderName?: string
       phone?: string
@@ -22,8 +22,8 @@ function findChatKey(state: ChatState, chatId: string, phone?: string) {
 }
 
 /**
- * Редьюсер — чистая функция: всю логику «в какой чат попало сообщение» можно тестировать без React.
- * Входящее сообщение сопоставляется с чатом по chatId → номеру телефона → aliasId; иначе создаётся новый чат.
+ * The reducer is a pure function, so all the "which chat does this message belong to" logic is testable without React.
+ * A queued message (incoming or sent from the phone) is matched to a chat by chatId → phone number → aliasId; otherwise a new chat is created.
  */
 export function chatReducer(state: ChatState, action: Action): ChatState {
   switch (action.type) {
@@ -46,16 +46,18 @@ export function chatReducer(state: ChatState, action: Action): ChatState {
     case 'addOutgoing': {
       const chat = state.chats[action.chatId]
       if (!chat) return state
+      // The notification for our own message can arrive before sendMessage resolves.
+      if (chat.messages.some((m) => m.id === action.message.id)) return state
       return {
         ...state,
         chats: { ...state.chats, [chat.id]: { ...chat, messages: [...chat.messages, action.message] } },
         order: [chat.id, ...state.order.filter((k) => k !== chat.id)],
       }
     }
-    case 'addIncoming': {
+    case 'receiveMessage': {
       const key = findChatKey(state, action.chatId, action.phone) ?? action.chatId
       const existing = state.chats[key]
-      // Идемпотентность: повторная доставка того же уведомления не должна дублировать сообщение.
+      // Idempotency: re-delivery of the same notification must not duplicate the message.
       if (existing?.messages.some((m) => m.id === action.message.id)) return state
       const base = existing ?? {
         id: key,
@@ -69,7 +71,7 @@ export function chatReducer(state: ChatState, action: Action): ChatState {
         aliasId: existing && key !== action.chatId ? action.chatId : base.aliasId,
         title: existing?.phone ? base.title : (action.senderName ?? base.title),
         messages: [...base.messages, action.message],
-        unread: state.activeId === key ? 0 : base.unread + 1,
+        unread: state.activeId === key || action.message.direction === 'out' ? 0 : base.unread + 1,
       }
       return {
         ...state,

@@ -6,10 +6,10 @@ export interface Message {
 }
 
 export interface Chat {
-  /** Ключ чата: chatId, под которым мы отправляем (79876543210@c.us). */
+  /** Chat key: the chatId we send to (79876543210@c.us). */
   id: string
   title: string
-  /** Числовой id Telegram из входящих уведомлений — по нему сопоставляем ответы с чатом. */
+  /** Numeric Telegram id from incoming notifications — used to match replies to the chat. */
   aliasId?: string
   phone?: string
   messages: Message[]
