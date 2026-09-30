@@ -1,0 +1,2 @@
+.layout { display: flex; height: 100dvh; }
+.banner { position: fixed; bottom: 16px; left: 50%; max-width: calc(100vw - 32px); padding: 10px 16px; transform: translateX(-50%); border-radius: 10px; background: var(--danger); color: #fff; font-size: 13px; box-shadow: 0 4px 16px rgb(0 0 0 / 20%); }
