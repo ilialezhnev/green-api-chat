@@ -1,32 +1,91 @@
-# React + TypeScript + Vite
+# GREEN-API Chat
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Простой веб-чат на React для отправки и получения **текстовых** сообщений через [GREEN-API](https://green-api.com/). Мессенджер — **Telegram** (в тестовом задании разрешена замена MAX на WhatsApp или Telegram), внешний вид — по мотивам [web.max.ru](https://web.max.ru/).
 
-Currently, two official plugins are available:
+- Демо: _ссылка появится после публикации на GitHub Pages_
+- Скриншоты: _будут добавлены_
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Возможности
 
-## React Compiler
+- Вход по `idInstance` и `apiTokenInstance` (адрес API можно переопределить), ключи проверяются при входе.
+- Новый чат по номеру телефона, список чатов с поиском и счётчиком непрочитанных.
+- Отправка сообщений методом `SendMessage`.
+- Получение сообщений через HTTP API: `ReceiveNotification` + `DeleteNotification` (polling раз в секунду).
+- История чатов сохраняется в браузере.
+- Настройка вебхуков инстанса прямо из интерфейса (кнопка ⚙ в боковой панели).
+- Валидация ввода: лимит 256 символов со счётчиком, номер получателя с маской и проверкой, понятные сообщения об ошибках.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Подготовка инстанса GREEN-API
 
-## Expanding the Oxlint configuration
+1. Зарегистрируйтесь в [консоли GREEN-API](https://console.green-api.com/) и создайте инстанс. Тариф Developer бесплатный, но ограничивает число чатов.
+2. Авторизуйте в инстансе свой аккаунт Telegram (по QR-коду или коду из консоли). Сообщения будут уходить от имени этого аккаунта.
+3. Скопируйте `idInstance` и `apiTokenInstance` со страницы инстанса.
+4. **Включите вебхуки**, иначе очередь уведомлений будет пустой и ответы не появятся. Это можно сделать двумя способами:
+   - в приложении: войдите, нажмите ⚙ и включите нужные переключатели;
+   - в консоли GREEN-API: блок Webhooks → Change.
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+   Нужны три вебхука: входящие сообщения, отправленные с телефона, отправленные через API. Поле **Webhook URL должно быть пустым**: если оно задано, уведомления уходят на этот адрес, а не в очередь.
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+   Инстанс применяет новые настройки не сразу, обычно в течение нескольких минут. Сообщения, отправленные до включения вебхуков, в очередь не попадают.
+
+## Локальный запуск
+
+Нужен Node.js 20.19+ (или 22.12+).
+
+```bash
+npm install
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Приложение откроется на http://localhost:5173.
+
+Другие команды:
+
+| Команда | Что делает |
+|---|---|
+| `npm run build` | проверка типов и production-сборка в `dist/` |
+| `npm run preview` | локальный просмотр собранной версии |
+| `npm test` | тесты (Vitest + React Testing Library) |
+| `npm run lint` | линтер (oxlint) |
+
+## Как проверить работу
+
+1. Откройте приложение и введите `idInstance` и `apiTokenInstance`. Если вебхуки ещё не включены, сделайте это через ⚙.
+2. Нажмите «+» и введите номер получателя (11 цифр, например `7 987 654-32-10`). Получатель должен быть пользователем Telegram, лучше всего — второй аккаунт или знакомый, который согласен получить тестовое сообщение.
+3. Напишите сообщение и отправьте. Оно придёт получателю в Telegram.
+4. Пусть получатель ответит в том же чате. Ответ появится в приложении в течение пары секунд.
+
+Сообщения, которые вы пишете со своего телефона (в том числе себе в «Избранное»), приложение тоже показывает, если включён вебхук «Отправленные с телефона».
+
+## Как устроено
+
+**Стек:** Vite, React 19, TypeScript, CSS Modules, `useReducer` + Context (без Redux), Vitest и React Testing Library.
+
+**Поток данных**
+
+```
+polling-хук → receiveNotification → notificationToAction → dispatch → deleteNotification
+форма чата  → sendMessage → dispatch (addOutgoing)
+```
+
+**Структура `src/`**
+
+- `api/` — клиент GREEN-API, разбор уведомлений в действия редьюсера, перевод ошибок в понятный текст.
+- `state/` — чистый редьюсер чатов, контекст, сохранение в `localStorage`.
+- `hooks/useNotificationPolling.ts` — цикл приёма сообщений.
+- `components/` — форма входа, боковая панель, окно чата, диалог настроек.
+- `utils/` — валидация и форматирование: сообщение, номер телефона, поля входа.
+
+**Решения, которые не очевидны из кода**
+
+- **Редьюсер — чистая функция.** Вся логика «в какой чат попало сообщение» тестируется без React. Ответ сопоставляется с чатом по `chatId`, затем по номеру телефона, затем по `aliasId`: Telegram присылает ответы с числовым id, а мы создаём чат по номеру.
+- **Идемпотентность.** Сообщения различаются по `idMessage`, поэтому повторная доставка одного уведомления и «гонка» между ответом `sendMessage` и вебхуком не создают дубли.
+- **Polling.** Пустая очередь опрашивается раз в секунду, непустая разбирается подряд без пауз. Уведомление удаляется всегда, даже если это не текст, иначе очередь застрянет на нём. При сбое пауза растёт экспоненциально до 30 секунд, а при потере связи в интерфейсе появляется баннер. Ответы 401 и 403 возвращают на форму входа.
+- **Таймауты.** У каждого запроса есть таймаут, чтобы «зависший» сервер не блокировал отправку.
+- **Хранилище.** Чаты нужно хранить самим: после `DeleteNotification` сообщение из очереди GREEN-API не вернуть.
+
+## Ограничения
+
+- Только текстовые сообщения, без файлов, картинок и голосовых.
+- Номер получателя — ровно 11 цифр (маска `X XXX XXX-XX-XX`), номера другой длины не принимаются. Цифра «8» в начале заменяется на «7».
+- Токен хранится в `localStorage` браузера и уходит только в GREEN-API.
