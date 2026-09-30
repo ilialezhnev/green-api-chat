@@ -51,21 +51,16 @@ GREEN-API chat — тестовое задание (Фронтенд разра�
 - CORS проверен (2026-09-29, curl с `Origin`, без ключей): `Access-Control-Allow-Origin: *`, preflight для POST и DELETE проходит → вызовы из браузера работают.
 
 ## Структура
-- `src/api/` — клиент GREEN-API (`greenApi.ts`) и типы.
-- `src/state/` — типы и чистый `chatReducer` (с тестами).
-- `src/utils/` — `phone.ts` (номер → chatId).
-- `src/hooks/` — `useNotificationPolling`; `src/components/` — LoginForm, Sidebar (список + новый чат), ChatWindow, Avatar (CSS Modules).
-- `src/state/` также: `storage.ts` (localStorage с валидацией), `ChatProvider` (useReducer + персист), `chatContext.ts` (контекст и `useChat`). Ключи в localStorage хранятся отдельно от чатов; выход очищает только ключи.
+- `src/api/` — клиент GREEN-API (`greenApi.ts`), разбор уведомлений (`notifications.ts`), ошибки (`errors.ts`), вебхуки инстанса (`webhooks.ts`), типы.
+- `src/state/` — чистый `chatReducer` (с тестами), `ChatProvider` (useReducer + персист), `chatContext.ts` (контекст и `useChat`), `storage.ts` (localStorage с валидацией). Ключи хранятся отдельно от чатов; выход очищает только ключи.
+- `src/hooks/` — `useNotificationPolling`.
+- `src/components/` — LoginForm, Sidebar (список чатов, новый чат), ChatWindow, SettingsDialog, Avatar (CSS Modules).
+- `src/utils/` — валидация и форматирование: `message.ts`, `phone.ts`, `credentials.ts`, `time.ts`.
 
 ## Статус
-Готово: каркас, API-клиент, reducer + тесты (`npm test`), сборка (`npm run build`).
+Готово: вход, чаты, отправка и приём (polling), валидация, обработка ошибок, диалог настроек вебхуков, README, workflow для GitHub Pages ([.github/workflows/deploy.yml](.github/workflows/deploy.yml)). Проверено вживую на тестовом инстансе.
 
-Дальше:
-1. ~~CORS~~ — готово.
-2. ~~Хук `useNotificationPolling`~~ — написан (без теста хука; проверить вживую с реальными ключами).
-3. ~~Персист~~, 4. ~~UI~~ — готово в первом приближении; нужна проверка вживую с реальными ключами и полировка под web.max.ru (иконочная колонка слева, мобильная вёрстка).
-5. README (запуск), GitHub Actions для Pages, скриншоты.
-6. `gh auth login` (делает пользователь) → создать публичный репо и запушить.
+Осталось: создать публичный репозиторий и запушить, включить Pages (Settings → Pages → Source: GitHub Actions), добавить ссылку на демо и скриншоты в README, полировка под web.max.ru (иконочная колонка слева, мобильная вёрстка), тест хука polling.
 
 ## Правила работы
 - Коммиты небольшие, сообщения в стиле conventional commits; в конец сообщения добавляй строку `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`.
