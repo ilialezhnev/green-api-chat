@@ -1,4 +1,4 @@
-import type { Credentials, Notification, SendMessageResponse } from './types'
+import type { Credentials, InstanceSettings, Notification, SendMessageResponse } from './types'
 
 export const DEFAULT_API_URL = 'https://api.green-api.com'
 
@@ -54,7 +54,19 @@ export function deleteNotification(c: Credentials, receiptId: number) {
   return request<{ result: boolean }>(buildUrl(c, 'deleteNotification', receiptId), { method: 'DELETE' })
 }
 
+export function getSettings(c: Credentials, signal?: AbortSignal) {
+  return request<InstanceSettings>(buildUrl(c, 'getSettings'), { signal })
+}
+
 /** Credentials check: getSettings returns 200 only for a valid id/token pair. */
-export function checkCredentials(c: Credentials, signal?: AbortSignal) {
-  return request<unknown>(buildUrl(c, 'getSettings'), { signal })
+export const checkCredentials = getSettings
+
+/** Partial update: only the passed keys change. The instance applies them with a delay of a few minutes. */
+export function setSettings(c: Credentials, settings: InstanceSettings, signal?: AbortSignal) {
+  return request<{ saveSettings: boolean }>(buildUrl(c, 'setSettings'), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(settings),
+    signal,
+  })
 }

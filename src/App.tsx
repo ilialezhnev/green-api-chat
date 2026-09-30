@@ -15,7 +15,7 @@ function Messenger({ credentials, onLogout, onAuthError }: { credentials: Creden
 
   return (
     <div className={styles.layout}>
-      <Sidebar onLogout={onLogout} />
+      <Sidebar credentials={credentials} onLogout={onLogout} />
       <ChatWindow credentials={credentials} />
       {connectionLost && (
         <div className={styles.banner} role="status">

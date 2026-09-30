@@ -9,7 +9,7 @@ function Harness() {
   const [state, dispatch] = useReducer(chatReducer, initialState)
   return (
     <ChatContext value={{ state, dispatch }}>
-      <Sidebar onLogout={() => {}} />
+      <Sidebar credentials={{ idInstance: '1', apiTokenInstance: 't', apiUrl: '' }} onLogout={() => {}} />
       <output>{state.order.join(',')}</output>
     </ChatContext>
   )

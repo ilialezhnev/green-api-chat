@@ -16,6 +16,9 @@
 .preview { overflow: hidden; font-size: 14px; color: var(--muted); text-overflow: ellipsis; white-space: nowrap; }
 .badge { min-width: 20px; padding: 0 6px; border-radius: 10px; background: var(--accent); color: #fff; font-size: 12px; line-height: 20px; text-align: center; }
 .empty { padding: 24px; text-align: center; color: var(--muted); }
-.logout { margin: 8px 12px 12px; padding: 8px; border: 0; background: none; color: var(--muted); cursor: pointer; }
+.footer { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px 12px; }
+.settings, .logout { padding: 8px; border: 0; background: none; color: var(--muted); cursor: pointer; }
+.settings { font-size: 20px; line-height: 1; }
+.settings:hover, .logout:hover { color: var(--text); }
 
 @media (max-width: 720px) { .sidebar { width: 100%; } }

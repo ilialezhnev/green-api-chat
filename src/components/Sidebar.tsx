@@ -1,16 +1,19 @@
 import { useState, type FormEvent } from 'react'
+import type { Credentials } from '../api/types'
 import { useChat } from '../state/chatContext'
 import { formatPhone, normalizePhone, phoneToChatId, validatePhone } from '../utils/phone'
 import { formatTime } from '../utils/time'
 import { Avatar } from './Avatar'
+import { SettingsDialog } from './SettingsDialog'
 import styles from './Sidebar.module.css'
 
-export function Sidebar({ onLogout }: { onLogout: () => void }) {
+export function Sidebar({ credentials, onLogout }: { credentials: Credentials; onLogout: () => void }) {
   const { state, dispatch } = useChat()
   const [query, setQuery] = useState('')
   const [adding, setAdding] = useState(false)
   const [phone, setPhone] = useState('')
   const [phoneError, setPhoneError] = useState<string | null>(null)
+  const [settingsOpen, setSettingsOpen] = useState(false)
 
   const needle = query.trim().toLowerCase()
   const chats = state.order.map((id) => state.chats[id]).filter((c) => c.title.toLowerCase().includes(needle))
@@ -79,7 +82,11 @@ export function Sidebar({ onLogout }: { onLogout: () => void }) {
         {chats.length === 0 && <li className={styles.empty}>{needle ? 'Ничего не найдено' : 'Нажмите «+», чтобы начать чат'}</li>}
       </ul>
 
-      <button className={styles.logout} onClick={onLogout}>Выйти</button>
+      <footer className={styles.footer}>
+        <button className={styles.settings} onClick={() => setSettingsOpen(true)} aria-label="Настройки" title="Настройки инстанса">⚙</button>
+        <button className={styles.logout} onClick={onLogout}>Выйти</button>
+      </footer>
+      {settingsOpen && <SettingsDialog credentials={credentials} onClose={() => setSettingsOpen(false)} />}
     </aside>
   )
 }

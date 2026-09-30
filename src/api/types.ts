@@ -29,3 +29,14 @@ export interface Notification {
     }
   }
 }
+
+export type Toggle = 'yes' | 'no'
+
+/** Instance settings the app reads and writes (getSettings returns more fields; we never touch them). */
+export interface InstanceSettings {
+  /** When set, notifications go to this URL instead of the ReceiveNotification queue. */
+  webhookUrl?: string
+  incomingWebhook?: Toggle
+  outgoingMessageWebhook?: Toggle
+  outgoingAPIMessageWebhook?: Toggle
+}

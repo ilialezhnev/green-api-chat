@@ -47,7 +47,7 @@ GREEN-API chat — тестовое задание (Фронтенд разра�
 - `GET .../receiveNotification/{token}?receiveTimeout=5..60` → `null` или `{receiptId, body:{typeWebhook:"incomingMessageReceived", senderData:{chatId,senderName,senderPhoneNumber}, messageData:{typeMessage:"textMessage", textMessageData:{textMessage}}}}`
 - `DELETE .../deleteNotification/{token}/{receiptId}` — обязательно после обработки, иначе придёт то же уведомление.
 - `chatId`: `79876543210@c.us` (по номеру) или числовой id; ответы приходят с числовым `chatId` → сопоставление с чатом по номеру телефона/`aliasId` (см. [chatReducer.ts](src/state/chatReducer.ts)).
-- Для polling в SetSettings нужно `webhookUrl: ""`, `incomingWebhook: "yes"`, `outgoingWebhook: "yes"`.
+- Для polling в SetSettings нужно `webhookUrl: ""` и включённые `incomingWebhook`, `outgoingMessageWebhook` (сообщения с телефона), `outgoingAPIMessageWebhook` — всё `"yes"`; `outgoingWebhook` отвечает за статусы отправленных, приложению не нужен. Диалог настроек ([SettingsDialog.tsx](src/components/SettingsDialog.tsx), шестерёнка в сайдбаре) читает `getSettings` и через `setSettings` шлёт только изменённые переключатели; инстанс применяет их с задержкой в несколько минут.
 - CORS проверен (2026-09-29, curl с `Origin`, без ключей): `Access-Control-Allow-Origin: *`, preflight для POST и DELETE проходит → вызовы из браузера работают.
 
 ## Структура
