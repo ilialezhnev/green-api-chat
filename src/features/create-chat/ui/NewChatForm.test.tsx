@@ -5,13 +5,14 @@ import { ChatContext, chatReducer, initialState } from '@/entities/chat';
 import { NewChatForm } from './NewChatForm';
 
 const onCreated = vi.fn();
+const onCancel = vi.fn();
 
 function Harness() {
   const [state, dispatch] = useReducer(chatReducer, initialState);
 
   return (
     <ChatContext value={{ state, dispatch }}>
-      <NewChatForm onCreated={onCreated} />
+      <NewChatForm onCreated={onCreated} onCancel={onCancel} />
       <output>{state.order.join(',')}</output>
     </ChatContext>
   );
@@ -19,7 +20,10 @@ function Harness() {
 
 const phoneInput = () => screen.getByLabelText('Номер телефона');
 
-beforeEach(() => onCreated.mockClear());
+beforeEach(() => {
+  onCreated.mockClear();
+  onCancel.mockClear();
+});
 
 describe('NewChatForm', () => {
   it('форматирует номер по маске и пропускает только цифры', async () => {
@@ -50,5 +54,16 @@ describe('NewChatForm', () => {
     await userEvent.click(screen.getByText('Начать чат'));
     expect(screen.getByRole('status')).toHaveTextContent('79876543210@c.us');
     expect(onCreated).toHaveBeenCalledOnce();
+  });
+
+  it('отменяет создание кнопкой с крестиком, не создавая чат', async () => {
+    render(<Harness />);
+
+    await userEvent.type(phoneInput(), '79876543210');
+    await userEvent.click(screen.getByLabelText('Отменить создание чата'));
+
+    expect(onCancel).toHaveBeenCalledOnce();
+    expect(onCreated).not.toHaveBeenCalled();
+    expect(screen.getByRole('status')).toBeEmptyDOMElement();
   });
 });

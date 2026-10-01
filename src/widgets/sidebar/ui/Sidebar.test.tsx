@@ -66,4 +66,13 @@ describe('Sidebar', () => {
     await userEvent.click(screen.getByText('+79876543210'));
     expect(screen.queryByLabelText('Номер телефона')).not.toBeInTheDocument();
   });
+
+  it('закрывает форму нового чата кнопкой отмены', async () => {
+    render(<Harness />);
+
+    await userEvent.click(screen.getByLabelText('Новый чат'));
+    await userEvent.click(screen.getByLabelText('Отменить создание чата'));
+
+    expect(screen.queryByLabelText('Номер телефона')).not.toBeInTheDocument();
+  });
 });

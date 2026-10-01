@@ -8,7 +8,12 @@ import {
 } from '@/features/create-chat/lib/phone';
 import styles from './NewChatForm.module.css';
 
-export function NewChatForm({ onCreated }: { onCreated: () => void }) {
+interface NewChatFormProps {
+  onCreated: () => void;
+  onCancel: () => void;
+}
+
+export function NewChatForm({ onCreated, onCancel }: NewChatFormProps) {
   const { dispatch } = useChat();
   const [phone, setPhone] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -44,7 +49,18 @@ export function NewChatForm({ onCreated }: { onCreated: () => void }) {
           {error}
         </span>
       )}
-      <button>Начать чат</button>
+      <div className={styles.actions}>
+        <button className={styles.submit}>Начать чат</button>
+        <button
+          type="button"
+          className={styles.cancel}
+          onClick={onCancel}
+          aria-label="Отменить создание чата"
+          title="Отменить"
+        >
+          ✕
+        </button>
+      </div>
     </form>
   );
 }

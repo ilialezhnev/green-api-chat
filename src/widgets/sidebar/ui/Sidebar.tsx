@@ -43,7 +43,9 @@ export function Sidebar({
         </button>
       </header>
 
-      {adding && <NewChatForm onCreated={() => setAdding(false)} />}
+      {adding && (
+        <NewChatForm onCreated={() => setAdding(false)} onCancel={() => setAdding(false)} />
+      )}
 
       <ul className={styles.list}>
         {chats.map((chat) => {
