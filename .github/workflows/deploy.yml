@@ -26,6 +26,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run lint
+      - run: npm run lint:style
       - run: npm run format:check
       - run: npm test
       # GITHUB_ACTIONS is set automatically, so vite.config.ts switches `base` to /green-api-chat/.

@@ -5,7 +5,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Команды
 - `npm run dev` — dev-сервер Vite; `npm run build` — `tsc -b && vite build`; `npm run preview` — просмотр сборки
 - `npm run lint` — oxlint (конфиг [.oxlintrc.json](.oxlintrc.json))
-- `npm run format` — Prettier (`format:check` — только проверка, её же запускает CI; правила в [.prettierrc.json](.prettierrc.json), `*.md` не форматируются)
+- `npm run format` — автоформатирование: ESLint `--fix` (фигурные скобки у if/else/for, пустые строки между блоками, после групп переменных, перед `return`), Stylelint `--fix` (пустая строка между CSS-правилами), затем Prettier. Правила в [eslint.config.js](eslint.config.js), [.stylelintrc.json](.stylelintrc.json), [.prettierrc.json](.prettierrc.json) (точки с запятой, одинарные кавычки, ширина 100); `*.md` не форматируются
+- `npm run lint:style` и `npm run format:check` — проверка без изменений (их запускает CI); `npm run lint` — oxlint (поиск ошибок)
 - `npm test` — Vitest однократно (jsdom, `globals: true`, setup в [src/test/setup.ts](src/test/setup.ts)); `npm run test:watch` — watch
 - Один файл: `npx vitest run src/entities/chat/model/chatReducer.test.ts`; один тест: `npx vitest run -t "часть названия"`
 
