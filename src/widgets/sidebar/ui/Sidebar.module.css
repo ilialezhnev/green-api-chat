@@ -27,15 +27,18 @@
   outline: 2px solid var(--accent);
 }
 
+/* The plus is an SVG: a text "+" sits below the line's center in most fonts. */
 .add {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
   width: 40px;
   height: 40px;
+  padding: 0;
   border: 0;
   border-radius: 50%;
   background: var(--accent);
   color: #fff;
-  font-size: 24px;
-  line-height: 1;
   cursor: pointer;
 }
 
