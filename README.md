@@ -2,7 +2,8 @@
 
 Простой веб-чат на React для отправки и получения **текстовых** сообщений через [GREEN-API](https://green-api.com/). Мессенджер — **Telegram** (в тестовом задании разрешена замена MAX на WhatsApp или Telegram), внешний вид — по мотивам [web.max.ru](https://web.max.ru/).
 
-- Демо: _ссылка появится после публикации на GitHub Pages_
+- Демо: https://ilialezhnev.github.io/green-api-chat/
+- Репозиторий: https://github.com/ilialezhnev/green-api-chat
 - Скриншоты: _будут добавлены_
 
 ## Возможности
