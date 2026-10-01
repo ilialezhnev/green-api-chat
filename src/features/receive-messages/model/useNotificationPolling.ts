@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type Dispatch } from 'react'
 import type { Action } from '@/entities/chat'
 import { deleteNotification, isAuthError, receiveNotification, type Credentials } from '@/shared/api'
-import { notificationToAction } from '../lib/notifications'
+import { notificationToAction } from '@/features/receive-messages/lib/notifications'
 
 /** Minimum pause between requests when the queue is empty: the server may respond immediately instead of waiting for receiveTimeout. */
 const POLL_INTERVAL = 1_000

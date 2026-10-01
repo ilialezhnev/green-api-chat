@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { describeError, getSettings, setSettings, type Credentials } from '@/shared/api'
-import { WEBHOOKS, changedWebhooks, toWebhookState, type WebhookState } from '../model/webhooks'
+import { WEBHOOKS, changedWebhooks, toWebhookState, type WebhookState } from '@/features/instance-settings/model/webhooks'
 import styles from './SettingsDialog.module.css'
 
 type Load = { status: 'loading' } | { status: 'error'; message: string } | { status: 'ready'; original: WebhookState; webhookUrl: string }

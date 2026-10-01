@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { DEFAULT_API_URL, checkCredentials, describeError, type Credentials } from '@/shared/api'
-import { validateCredentials, type CredentialsErrors } from '../model/credentials'
+import { validateCredentials, type CredentialsErrors } from '@/features/auth/model/credentials'
 import styles from './LoginForm.module.css'
 
 interface Props {

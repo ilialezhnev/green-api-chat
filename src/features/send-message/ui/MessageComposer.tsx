@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { useChat } from '@/entities/chat'
 import { describeError, sendMessage, type Credentials } from '@/shared/api'
-import { MAX_MESSAGE_LENGTH, messageLength, sanitizeMessage, validateMessage } from '../lib/message'
+import { MAX_MESSAGE_LENGTH, messageLength, sanitizeMessage, validateMessage } from '@/features/send-message/lib/message'
 import styles from './MessageComposer.module.css'
 
 export function MessageComposer({ chatId, credentials }: { chatId: string; credentials: Credentials }) {
