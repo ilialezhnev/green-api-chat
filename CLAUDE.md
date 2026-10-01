@@ -64,7 +64,7 @@ GREEN-API chat — тестовое задание (Фронтенд разра�
 ## Статус
 Готово: вход, чаты, отправка и приём (polling), валидация, обработка ошибок, диалог настроек вебхуков, README, workflow для GitHub Pages ([.github/workflows/deploy.yml](.github/workflows/deploy.yml)). Проверено вживую на тестовом инстансе.
 
-Осталось: создать публичный репозиторий и запушить, включить Pages (Settings → Pages → Source: GitHub Actions), добавить ссылку на демо и скриншоты в README, полировка под web.max.ru (иконочная колонка слева на десктопе), тест хука polling.
+Осталось: создать публичный репозиторий и запушить, включить Pages (Settings → Pages → Source: GitHub Actions), добавить ссылку на демо и скриншоты в README, полировка под web.max.ru (иконочная колонка слева на десктопе).
 
 ## Правила работы
 - Коммиты небольшие, сообщения в стиле conventional commits; в конец сообщения добавляй строку `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`.
