@@ -1,1 +1,1 @@
-export { useNotificationPolling } from './model/useNotificationPolling'
+export { useNotificationPolling } from './model/useNotificationPolling';

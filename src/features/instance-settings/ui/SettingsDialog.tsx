@@ -1,76 +1,92 @@
-import { useCallback, useEffect, useState } from 'react'
-import { describeError, getSettings, setSettings, type Credentials } from '@/shared/api'
+import { useCallback, useEffect, useState } from 'react';
+import { describeError, getSettings, setSettings, type Credentials } from '@/shared/api';
 import {
   WEBHOOKS,
   changedWebhooks,
   toWebhookState,
   type WebhookState,
-} from '@/features/instance-settings/model/webhooks'
-import styles from './SettingsDialog.module.css'
+} from '@/features/instance-settings/model/webhooks';
+import styles from './SettingsDialog.module.css';
 
 type Load =
   | { status: 'loading' }
   | { status: 'error'; message: string }
-  | { status: 'ready'; original: WebhookState; webhookUrl: string }
+  | { status: 'ready'; original: WebhookState; webhookUrl: string };
 
 export function SettingsDialog({
   credentials,
   onClose,
 }: {
-  credentials: Credentials
-  onClose: () => void
+  credentials: Credentials;
+  onClose: () => void;
 }) {
-  const [load, setLoad] = useState<Load>({ status: 'loading' })
-  const [draft, setDraft] = useState<WebhookState | null>(null)
-  const [saving, setSaving] = useState(false)
-  const [message, setMessage] = useState<{ kind: 'ok' | 'error'; text: string } | null>(null)
+  const [load, setLoad] = useState<Load>({ status: 'loading' });
+  const [draft, setDraft] = useState<WebhookState | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState<{ kind: 'ok' | 'error'; text: string } | null>(null);
 
   const fetchSettings = useCallback(
     (signal?: AbortSignal) => {
       getSettings(credentials, signal)
         .then((settings) => {
-          const original = toWebhookState(settings)
-          setDraft(original)
-          setLoad({ status: 'ready', original, webhookUrl: settings.webhookUrl ?? '' })
+          const original = toWebhookState(settings);
+
+          setDraft(original);
+          setLoad({ status: 'ready', original, webhookUrl: settings.webhookUrl ?? '' });
         })
         .catch((err) => {
-          if (!signal?.aborted) setLoad({ status: 'error', message: describeError(err) })
-        })
+          if (!signal?.aborted) {
+            setLoad({ status: 'error', message: describeError(err) });
+          }
+        });
     },
     [credentials],
-  )
+  );
 
   useEffect(() => {
-    const controller = new AbortController()
-    fetchSettings(controller.signal)
-    return () => controller.abort()
-  }, [fetchSettings])
+    const controller = new AbortController();
+
+    fetchSettings(controller.signal);
+
+    return () => controller.abort();
+  }, [fetchSettings]);
 
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
-    document.addEventListener('keydown', onKey)
-    return () => document.removeEventListener('keydown', onKey)
-  }, [onClose])
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
 
-  const changes = load.status === 'ready' && draft ? changedWebhooks(load.original, draft) : {}
-  const hasChanges = Object.keys(changes).length > 0
+    document.addEventListener('keydown', onKey);
+
+    return () => document.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
+  const changes = load.status === 'ready' && draft ? changedWebhooks(load.original, draft) : {};
+  const hasChanges = Object.keys(changes).length > 0;
 
   async function handleSave() {
-    if (load.status !== 'ready' || !draft || !hasChanges) return
-    setSaving(true)
-    setMessage(null)
+    if (load.status !== 'ready' || !draft || !hasChanges) {
+      return;
+    }
+
+    setSaving(true);
+    setMessage(null);
+
     try {
-      const { saveSettings } = await setSettings(credentials, changes)
-      if (!saveSettings) throw new Error('not saved')
-      setLoad({ ...load, original: draft })
+      const { saveSettings } = await setSettings(credentials, changes);
+
+      if (!saveSettings) {
+        throw new Error('not saved');
+      }
+
+      setLoad({ ...load, original: draft });
+
       setMessage({
         kind: 'ok',
         text: 'Сохранено. Инстанс применяет настройки в течение нескольких минут.',
-      })
+      });
     } catch (err) {
-      setMessage({ kind: 'error', text: `Не удалось сохранить: ${describeError(err)}` })
+      setMessage({ kind: 'error', text: `Не удалось сохранить: ${describeError(err)}` });
     } finally {
-      setSaving(false)
+      setSaving(false);
     }
   }
 
@@ -96,8 +112,8 @@ export function SettingsDialog({
             {load.message}
             <button
               onClick={() => {
-                setLoad({ status: 'loading' })
-                fetchSettings()
+                setLoad({ status: 'loading' });
+                fetchSettings();
               }}
             >
               Повторить
@@ -122,8 +138,8 @@ export function SettingsDialog({
                       role="switch"
                       checked={draft[key]}
                       onChange={(e) => {
-                        setDraft({ ...draft, [key]: e.target.checked })
-                        setMessage(null)
+                        setDraft({ ...draft, [key]: e.target.checked });
+                        setMessage(null);
                       }}
                     />
                     <span>
@@ -156,5 +172,5 @@ export function SettingsDialog({
         </div>
       </div>
     </div>
-  )
+  );
 }

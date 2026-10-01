@@ -1,2 +1,2 @@
-export { LoginForm } from './ui/LoginForm'
-export { clearCredentials, loadCredentials, saveCredentials } from './model/storage'
+export { LoginForm } from './ui/LoginForm';
+export { clearCredentials, loadCredentials, saveCredentials } from './model/storage';

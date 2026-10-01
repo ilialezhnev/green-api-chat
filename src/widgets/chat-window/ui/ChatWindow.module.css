@@ -5,6 +5,7 @@
   min-width: 0;
   background: #dbe9f7;
 }
+
 .placeholder {
   display: grid;
   flex: 1;
@@ -12,6 +13,7 @@
   color: var(--muted);
   background: #dbe9f7;
 }
+
 .header {
   display: flex;
   align-items: center;
@@ -20,6 +22,7 @@
   background: var(--surface);
   border-bottom: 1px solid var(--border);
 }
+
 .messages {
   display: flex;
   flex: 1;
@@ -30,6 +33,7 @@
   background-image: radial-gradient(rgb(255 255 255 / 45%) 1.5px, transparent 1.5px);
   background-size: 22px 22px;
 }
+
 .bubble {
   display: flex;
   align-items: flex-end;
@@ -41,19 +45,23 @@
   overflow-wrap: anywhere;
   white-space: pre-wrap;
 }
+
 .bubble time {
   flex-shrink: 0;
   font-size: 11px;
   color: var(--muted);
 }
+
 .bubble[data-direction='out'] {
   align-self: flex-end;
   background: var(--accent);
   color: #fff;
 }
+
 .bubble[data-direction='out'] time {
   color: rgb(255 255 255 / 75%);
 }
+
 .bubble[data-direction='in'] {
   align-self: flex-start;
 }

@@ -1,48 +1,56 @@
-import { useState, type FormEvent } from 'react'
-import { useChat } from '@/entities/chat'
-import { describeError, sendMessage, type Credentials } from '@/shared/api'
+import { useState, type FormEvent } from 'react';
+import { useChat } from '@/entities/chat';
+import { describeError, sendMessage, type Credentials } from '@/shared/api';
 import {
   MAX_MESSAGE_LENGTH,
   messageLength,
   sanitizeMessage,
   validateMessage,
-} from '@/features/send-message/lib/message'
-import styles from './MessageComposer.module.css'
+} from '@/features/send-message/lib/message';
+import styles from './MessageComposer.module.css';
 
 export function MessageComposer({
   chatId,
   credentials,
 }: {
-  chatId: string
-  credentials: Credentials
+  chatId: string;
+  credentials: Credentials;
 }) {
-  const { dispatch } = useChat()
-  const [text, setText] = useState('')
-  const [sending, setSending] = useState(false)
-  const [error, setError] = useState('')
-  const length = messageLength(text)
+  const { dispatch } = useChat();
+  const [text, setText] = useState('');
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState('');
+  const length = messageLength(text);
   // An empty field isn't an error, just a disabled button; every other reason is shown as the user types.
-  const validationError = text.trim() ? validateMessage(text) : null
-  const canSend = !sending && text.trim() !== '' && validationError === null
+  const validationError = text.trim() ? validateMessage(text) : null;
+  const canSend = !sending && text.trim() !== '' && validationError === null;
 
   async function handleSubmit(e: FormEvent) {
-    e.preventDefault()
-    if (!canSend) return
-    const message = sanitizeMessage(text)
-    setSending(true)
-    setError('')
+    e.preventDefault();
+
+    if (!canSend) {
+      return;
+    }
+
+    const message = sanitizeMessage(text);
+
+    setSending(true);
+    setError('');
+
     try {
-      const { idMessage } = await sendMessage(credentials, chatId, message)
+      const { idMessage } = await sendMessage(credentials, chatId, message);
+
       dispatch({
         type: 'addOutgoing',
         chatId,
         message: { id: idMessage, text: message, direction: 'out', timestamp: Date.now() },
-      })
-      setText('')
+      });
+
+      setText('');
     } catch (err) {
-      setError(`Не удалось отправить: ${describeError(err)}`)
+      setError(`Не удалось отправить: ${describeError(err)}`);
     } finally {
-      setSending(false)
+      setSending(false);
     }
   }
 
@@ -58,8 +66,8 @@ export function MessageComposer({
           <input
             value={text}
             onChange={(e) => {
-              setText(e.target.value)
-              setError('')
+              setText(e.target.value);
+              setError('');
             }}
             placeholder="Сообщение"
             aria-label="Сообщение"
@@ -80,5 +88,5 @@ export function MessageComposer({
         </button>
       </form>
     </>
-  )
+  );
 }

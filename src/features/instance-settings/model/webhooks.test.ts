@@ -1,4 +1,4 @@
-import { changedWebhooks, toWebhookState } from './webhooks'
+import { changedWebhooks, toWebhookState } from './webhooks';
 
 describe('webhooks', () => {
   it('reads yes/no from instance settings, treating missing keys as off', () => {
@@ -6,16 +6,18 @@ describe('webhooks', () => {
       incomingWebhook: true,
       outgoingMessageWebhook: false,
       outgoingAPIMessageWebhook: false,
-    })
-  })
+    });
+  });
 
   it('sends only the toggles that changed', () => {
     const original = toWebhookState({
       incomingWebhook: 'yes',
       outgoingMessageWebhook: 'no',
       outgoingAPIMessageWebhook: 'no',
-    })
-    expect(changedWebhooks(original, original)).toEqual({})
+    });
+
+    expect(changedWebhooks(original, original)).toEqual({});
+
     expect(
       changedWebhooks(original, {
         ...original,
@@ -25,6 +27,6 @@ describe('webhooks', () => {
     ).toEqual({
       incomingWebhook: 'no',
       outgoingMessageWebhook: 'yes',
-    })
-  })
-})
+    });
+  });
+});

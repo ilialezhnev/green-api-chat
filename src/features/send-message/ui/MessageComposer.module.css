@@ -5,12 +5,14 @@
   padding: 10px 16px;
   background: var(--surface);
 }
+
 .field {
   display: flex;
   flex: 1;
   flex-direction: column;
   gap: 4px;
 }
+
 .composer input {
   width: 100%;
   padding: 11px 16px;
@@ -20,12 +22,15 @@
   font-size: 15px;
   color: var(--text);
 }
+
 .composer input:focus {
   outline: 2px solid var(--accent);
 }
+
 .composer input[aria-invalid='true'] {
   outline: 2px solid var(--danger);
 }
+
 .composer button {
   width: 44px;
   height: 44px;
@@ -36,10 +41,12 @@
   font-size: 16px;
   cursor: pointer;
 }
+
 .composer button:disabled {
   opacity: 0.5;
   cursor: default;
 }
+
 .hint {
   display: flex;
   justify-content: space-between;
@@ -48,13 +55,16 @@
   font-size: 12px;
   color: var(--muted);
 }
+
 .hint [data-over='true'] {
   color: var(--danger);
   font-weight: 600;
 }
+
 .validation {
   color: var(--danger);
 }
+
 .error {
   margin: 0;
   padding: 8px 16px;

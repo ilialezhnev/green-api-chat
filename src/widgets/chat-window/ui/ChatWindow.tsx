@@ -1,21 +1,23 @@
-import { useEffect, useRef } from 'react'
-import { Avatar, useChat } from '@/entities/chat'
-import { MessageComposer } from '@/features/send-message'
-import type { Credentials } from '@/shared/api'
-import { formatTime } from '@/shared/lib'
-import styles from './ChatWindow.module.css'
+import { useEffect, useRef } from 'react';
+import { Avatar, useChat } from '@/entities/chat';
+import { MessageComposer } from '@/features/send-message';
+import type { Credentials } from '@/shared/api';
+import { formatTime } from '@/shared/lib';
+import styles from './ChatWindow.module.css';
 
 export function ChatWindow({ credentials }: { credentials: Credentials }) {
-  const { state } = useChat()
-  const chat = state.activeId ? state.chats[state.activeId] : null
-  const endRef = useRef<HTMLDivElement>(null)
-  const messageCount = chat?.messages.length
+  const { state } = useChat();
+  const chat = state.activeId ? state.chats[state.activeId] : null;
+  const endRef = useRef<HTMLDivElement>(null);
+  const messageCount = chat?.messages.length;
 
   useEffect(() => {
-    endRef.current?.scrollIntoView?.({ block: 'end' })
-  }, [chat?.id, messageCount])
+    endRef.current?.scrollIntoView?.({ block: 'end' });
+  }, [chat?.id, messageCount]);
 
-  if (!chat) return <main className={styles.placeholder}>Выберите чат или начните новый</main>
+  if (!chat) {
+    return <main className={styles.placeholder}>Выберите чат или начните новый</main>;
+  }
 
   return (
     <main className={styles.window}>
@@ -36,5 +38,5 @@ export function ChatWindow({ credentials }: { credentials: Credentials }) {
 
       <MessageComposer chatId={chat.id} credentials={credentials} />
     </main>
-  )
+  );
 }

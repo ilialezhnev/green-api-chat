@@ -1,24 +1,25 @@
-import { useEffect, useRef, useState, type Dispatch } from 'react'
-import type { Action } from '@/entities/chat'
+import { useEffect, useRef, useState, type Dispatch } from 'react';
+import type { Action } from '@/entities/chat';
 import {
   deleteNotification,
   isAuthError,
   receiveNotification,
   type Credentials,
-} from '@/shared/api'
-import { notificationToAction } from '@/features/receive-messages/lib/notifications'
+} from '@/shared/api';
+import { notificationToAction } from '@/features/receive-messages/lib/notifications';
 
 /** Minimum pause between requests when the queue is empty: the server may respond immediately instead of waiting for receiveTimeout. */
-const POLL_INTERVAL = 1_000
-const MIN_DELAY = 1_000
-const MAX_DELAY = 30_000
+const POLL_INTERVAL = 1_000;
+const MIN_DELAY = 1_000;
+const MAX_DELAY = 30_000;
 
 /** Waits `ms`, but wakes up immediately if polling is stopped. */
 function sleep(ms: number, signal: AbortSignal) {
   return new Promise<void>((resolve) => {
-    const timer = setTimeout(resolve, ms)
-    signal.addEventListener('abort', () => (clearTimeout(timer), resolve()), { once: true })
-  })
+    const timer = setTimeout(resolve, ms);
+
+    signal.addEventListener('abort', () => (clearTimeout(timer), resolve()), { once: true });
+  });
 }
 
 /**
@@ -33,53 +34,73 @@ export function useNotificationPolling(
   onAuthError?: () => void,
 ) {
   // Callbacks are kept in a ref so changing them doesn't restart polling.
-  const latest = useRef({ dispatch, onAuthError })
-  useEffect(() => {
-    latest.current = { dispatch, onAuthError }
-  })
-
-  const [connectionLost, setConnectionLost] = useState(false)
-  const { idInstance, apiTokenInstance, apiUrl } = credentials ?? {}
+  const latest = useRef({ dispatch, onAuthError });
 
   useEffect(() => {
-    if (!idInstance || !apiTokenInstance) return
-    const creds: Credentials = { idInstance, apiTokenInstance, apiUrl: apiUrl ?? '' }
-    const controller = new AbortController()
-    const { signal } = controller
+    latest.current = { dispatch, onAuthError };
+  });
+
+  const [connectionLost, setConnectionLost] = useState(false);
+  const { idInstance, apiTokenInstance, apiUrl } = credentials ?? {};
+
+  useEffect(() => {
+    if (!idInstance || !apiTokenInstance) {
+      return;
+    }
+
+    const creds: Credentials = { idInstance, apiTokenInstance, apiUrl: apiUrl ?? '' };
+    const controller = new AbortController();
+    const { signal } = controller;
 
     async function loop() {
-      let delay = MIN_DELAY
+      let delay = MIN_DELAY;
+
       while (!signal.aborted) {
         try {
-          const notification = await receiveNotification(creds, signal)
-          if (signal.aborted) return
-          delay = MIN_DELAY
-          setConnectionLost(false)
-          if (!notification) {
-            await sleep(POLL_INTERVAL, signal)
-            continue
+          const notification = await receiveNotification(creds, signal);
+
+          if (signal.aborted) {
+            return;
           }
 
-          const action = notificationToAction(notification)
-          if (action) latest.current.dispatch(action)
-          // Always delete, even if the message isn't for us — otherwise the queue gets stuck on it.
-          await deleteNotification(creds, notification.receiptId)
-        } catch (error) {
-          if (signal.aborted) return
-          if (isAuthError(error)) {
-            latest.current.onAuthError?.()
-            return
+          delay = MIN_DELAY;
+          setConnectionLost(false);
+
+          if (!notification) {
+            await sleep(POLL_INTERVAL, signal);
+            continue;
           }
-          setConnectionLost(true)
-          await sleep(delay, signal)
-          delay = Math.min(delay * 2, MAX_DELAY)
+
+          const action = notificationToAction(notification);
+
+          if (action) {
+            latest.current.dispatch(action);
+          }
+
+          // Always delete, even if the message isn't for us — otherwise the queue gets stuck on it.
+          await deleteNotification(creds, notification.receiptId);
+        } catch (error) {
+          if (signal.aborted) {
+            return;
+          }
+
+          if (isAuthError(error)) {
+            latest.current.onAuthError?.();
+
+            return;
+          }
+
+          setConnectionLost(true);
+          await sleep(delay, signal);
+          delay = Math.min(delay * 2, MAX_DELAY);
         }
       }
     }
 
-    void loop()
-    return () => controller.abort()
-  }, [idInstance, apiTokenInstance, apiUrl])
+    void loop();
 
-  return { connectionLost }
+    return () => controller.abort();
+  }, [idInstance, apiTokenInstance, apiUrl]);
+
+  return { connectionLost };
 }

@@ -1,11 +1,11 @@
-import { useState, type FormEvent } from 'react'
-import { DEFAULT_API_URL, checkCredentials, describeError, type Credentials } from '@/shared/api'
-import { validateCredentials, type CredentialsErrors } from '@/features/auth/model/credentials'
-import styles from './LoginForm.module.css'
+import { useState, type FormEvent } from 'react';
+import { DEFAULT_API_URL, checkCredentials, describeError, type Credentials } from '@/shared/api';
+import { validateCredentials, type CredentialsErrors } from '@/features/auth/model/credentials';
+import styles from './LoginForm.module.css';
 
 interface Props {
-  onLogin: (credentials: Credentials) => void
-  notice?: string
+  onLogin: (credentials: Credentials) => void;
+  notice?: string;
 }
 
 export function LoginForm({ onLogin, notice }: Props) {
@@ -13,40 +13,45 @@ export function LoginForm({ onLogin, notice }: Props) {
     idInstance: '',
     apiTokenInstance: '',
     apiUrl: '',
-  })
-  const [fieldErrors, setFieldErrors] = useState<CredentialsErrors>({})
-  const [error, setError] = useState(notice ?? '')
-  const [loading, setLoading] = useState(false)
+  });
+  const [fieldErrors, setFieldErrors] = useState<CredentialsErrors>({});
+  const [error, setError] = useState(notice ?? '');
+  const [loading, setLoading] = useState(false);
 
   const bind = (name: keyof Credentials) => ({
     value: values[name],
     'aria-invalid': Boolean(fieldErrors[name]),
     onChange: (e: { target: { value: string } }) => {
-      setValues((v) => ({ ...v, [name]: e.target.value }))
-      setFieldErrors((errs) => ({ ...errs, [name]: undefined }))
+      setValues((v) => ({ ...v, [name]: e.target.value }));
+      setFieldErrors((errs) => ({ ...errs, [name]: undefined }));
     },
-  })
+  });
 
   async function handleSubmit(e: FormEvent) {
-    e.preventDefault()
+    e.preventDefault();
     const credentials = {
       idInstance: values.idInstance.trim(),
       apiTokenInstance: values.apiTokenInstance.trim(),
       apiUrl: values.apiUrl.trim(),
-    }
-    const errors = validateCredentials(credentials)
-    setFieldErrors(errors)
-    setError('')
-    if (Object.keys(errors).length > 0) return
+    };
+    const errors = validateCredentials(credentials);
 
-    setLoading(true)
+    setFieldErrors(errors);
+    setError('');
+
+    if (Object.keys(errors).length > 0) {
+      return;
+    }
+
+    setLoading(true);
+
     try {
-      await checkCredentials(credentials)
-      onLogin(credentials)
+      await checkCredentials(credentials);
+      onLogin(credentials);
     } catch (err) {
-      setError(describeError(err))
+      setError(describeError(err));
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
@@ -82,5 +87,5 @@ export function LoginForm({ onLogin, notice }: Props) {
       )}
       <button disabled={loading}>{loading ? 'Проверяем…' : 'Войти'}</button>
     </form>
-  )
+  );
 }

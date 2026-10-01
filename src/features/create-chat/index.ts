@@ -1,1 +1,1 @@
-export { NewChatForm } from './ui/NewChatForm'
+export { NewChatForm } from './ui/NewChatForm';

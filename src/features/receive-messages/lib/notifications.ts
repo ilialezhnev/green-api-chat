@@ -1,14 +1,14 @@
-import type { Action, Message } from '@/entities/chat'
-import type { Notification } from '@/shared/api'
+import type { Action, Message } from '@/entities/chat';
+import type { Notification } from '@/shared/api';
 
 const DIRECTIONS: Record<string, Message['direction'] | undefined> = {
   incomingMessageReceived: 'in',
   outgoingMessageReceived: 'out',
   outgoingAPIMessageReceived: 'out',
-}
+};
 
 const phoneOf = (s: { senderPhoneNumber?: number }) =>
-  s.senderPhoneNumber ? String(s.senderPhoneNumber) : undefined
+  s.senderPhoneNumber ? String(s.senderPhoneNumber) : undefined;
 
 /**
  * Turns a GREEN-API notification into a reducer action.
@@ -17,13 +17,24 @@ const phoneOf = (s: { senderPhoneNumber?: number }) =>
  */
 export function notificationToAction({ receiptId, body }: Notification): Action | null {
   // outgoing*: messages sent by the instance owner (from the phone or via API), including "Saved Messages".
-  const direction = DIRECTIONS[body.typeWebhook]
-  if (!direction) return null
-  const { senderData, messageData } = body
-  if (!senderData || !messageData) return null
+  const direction = DIRECTIONS[body.typeWebhook];
 
-  const text = messageData.textMessageData?.textMessage ?? messageData.extendedTextMessageData?.text
-  if (!text) return null
+  if (!direction) {
+    return null;
+  }
+
+  const { senderData, messageData } = body;
+
+  if (!senderData || !messageData) {
+    return null;
+  }
+
+  const text =
+    messageData.textMessageData?.textMessage ?? messageData.extendedTextMessageData?.text;
+
+  if (!text) {
+    return null;
+  }
 
   return {
     type: 'receiveMessage',
@@ -43,5 +54,5 @@ export function notificationToAction({ receiptId, body }: Notification): Action 
       direction,
       timestamp: (body.timestamp ?? Date.now() / 1000) * 1000,
     },
-  }
+  };
 }

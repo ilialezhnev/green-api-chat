@@ -1,27 +1,27 @@
-import { useState } from 'react'
-import { Avatar, useChat } from '@/entities/chat'
-import { NewChatForm } from '@/features/create-chat'
-import { SettingsDialog } from '@/features/instance-settings'
-import type { Credentials } from '@/shared/api'
-import { formatTime } from '@/shared/lib'
-import styles from './Sidebar.module.css'
+import { useState } from 'react';
+import { Avatar, useChat } from '@/entities/chat';
+import { NewChatForm } from '@/features/create-chat';
+import { SettingsDialog } from '@/features/instance-settings';
+import type { Credentials } from '@/shared/api';
+import { formatTime } from '@/shared/lib';
+import styles from './Sidebar.module.css';
 
 export function Sidebar({
   credentials,
   onLogout,
 }: {
-  credentials: Credentials
-  onLogout: () => void
+  credentials: Credentials;
+  onLogout: () => void;
 }) {
-  const { state, dispatch } = useChat()
-  const [query, setQuery] = useState('')
-  const [adding, setAdding] = useState(false)
-  const [settingsOpen, setSettingsOpen] = useState(false)
+  const { state, dispatch } = useChat();
+  const [query, setQuery] = useState('');
+  const [adding, setAdding] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
-  const needle = query.trim().toLowerCase()
+  const needle = query.trim().toLowerCase();
   const chats = state.order
     .map((id) => state.chats[id])
-    .filter((c) => c.title.toLowerCase().includes(needle))
+    .filter((c) => c.title.toLowerCase().includes(needle));
 
   return (
     <aside className={styles.sidebar}>
@@ -46,7 +46,8 @@ export function Sidebar({
 
       <ul className={styles.list}>
         {chats.map((chat) => {
-          const last = chat.messages.at(-1)
+          const last = chat.messages.at(-1);
+
           return (
             <li key={chat.id}>
               <button
@@ -67,7 +68,7 @@ export function Sidebar({
                 </span>
               </button>
             </li>
-          )
+          );
         })}
         {chats.length === 0 && (
           <li className={styles.empty}>
@@ -93,5 +94,5 @@ export function Sidebar({
         <SettingsDialog credentials={credentials} onClose={() => setSettingsOpen(false)} />
       )}
     </aside>
-  )
+  );
 }

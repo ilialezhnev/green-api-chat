@@ -1,2 +1,2 @@
-export { formatTime } from './time'
-export { isRecord, readJson, removeKey, writeJson } from './storage'
+export { formatTime } from './time';
+export { isRecord, readJson, removeKey, writeJson } from './storage';
