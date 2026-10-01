@@ -25,7 +25,12 @@ describe('notificationToAction', () => {
   })
 
   it('понимает extendedTextMessage', () => {
-    const n = incoming({ messageData: { typeMessage: 'extendedTextMessage', extendedTextMessageData: { text: 'ссылка' } } })
+    const n = incoming({
+      messageData: {
+        typeMessage: 'extendedTextMessage',
+        extendedTextMessageData: { text: 'ссылка' },
+      },
+    })
     expect(notificationToAction(n)).toMatchObject({ message: { text: 'ссылка' } })
   })
 
@@ -44,6 +49,8 @@ describe('notificationToAction', () => {
 
   it('игнорирует не входящие сообщения и не текст', () => {
     expect(notificationToAction(incoming({ typeWebhook: 'outgoingMessageStatus' }))).toBeNull()
-    expect(notificationToAction(incoming({ messageData: { typeMessage: 'imageMessage' } }))).toBeNull()
+    expect(
+      notificationToAction(incoming({ messageData: { typeMessage: 'imageMessage' } })),
+    ).toBeNull()
   })
 })

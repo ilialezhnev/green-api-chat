@@ -10,7 +10,11 @@ function hueOf(name: string) {
 export function Avatar({ name }: { name: string }) {
   const initial = name.replace(/^\+/, '').charAt(0).toUpperCase() || '?'
   return (
-    <span className={styles.avatar} style={{ background: `hsl(${hueOf(name)} 55% 50%)` }} aria-hidden="true">
+    <span
+      className={styles.avatar}
+      style={{ background: `hsl(${hueOf(name)} 55% 50%)` }}
+      aria-hidden="true"
+    >
       {initial}
     </span>
   )

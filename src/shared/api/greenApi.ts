@@ -21,7 +21,11 @@ function buildUrl(c: Credentials, method: string, ...tail: (string | number)[]) 
 const REQUEST_TIMEOUT = 15_000
 
 /** Every request has a timeout, otherwise a hung server would block the send button forever. */
-async function request<T>(url: string, init: RequestInit = {}, timeout = REQUEST_TIMEOUT): Promise<T> {
+async function request<T>(
+  url: string,
+  init: RequestInit = {},
+  timeout = REQUEST_TIMEOUT,
+): Promise<T> {
   const timeoutSignal = AbortSignal.timeout(timeout)
   const signal = init.signal ? AbortSignal.any([init.signal, timeoutSignal]) : timeoutSignal
   const res = await fetch(url, { ...init, signal })
@@ -51,7 +55,9 @@ export function receiveNotification(c: Credentials, signal?: AbortSignal, receiv
 }
 
 export function deleteNotification(c: Credentials, receiptId: number) {
-  return request<{ result: boolean }>(buildUrl(c, 'deleteNotification', receiptId), { method: 'DELETE' })
+  return request<{ result: boolean }>(buildUrl(c, 'deleteNotification', receiptId), {
+    method: 'DELETE',
+  })
 }
 
 export function getSettings(c: Credentials, signal?: AbortSignal) {

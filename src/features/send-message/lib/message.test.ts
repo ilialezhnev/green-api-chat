@@ -24,8 +24,10 @@ describe('validateMessage', () => {
     expect(validateMessage('😀'.repeat(MAX_MESSAGE_LENGTH))).toBeNull()
     expect(messageLength('😀')).toBe(1)
   })
-  it.each(['<script>alert(1)</script>', 'смотри <img src=x onerror=alert(1)>', '<b>hi</b>', 'JavaScript:alert(1)'])(
-    'отклоняет разметку и скрипты: %s',
-    (text) => expect(validateMessage(text)).toMatch(/HTML/),
-  )
+  it.each([
+    '<script>alert(1)</script>',
+    'смотри <img src=x onerror=alert(1)>',
+    '<b>hi</b>',
+    'JavaScript:alert(1)',
+  ])('отклоняет разметку и скрипты: %s', (text) => expect(validateMessage(text)).toMatch(/HTML/))
 })

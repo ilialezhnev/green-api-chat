@@ -1,6 +1,11 @@
 import { useState, type FormEvent } from 'react'
 import { useChat } from '@/entities/chat'
-import { formatPhone, normalizePhone, phoneToChatId, validatePhone } from '@/features/create-chat/lib/phone'
+import {
+  formatPhone,
+  normalizePhone,
+  phoneToChatId,
+  validatePhone,
+} from '@/features/create-chat/lib/phone'
 import styles from './NewChatForm.module.css'
 
 export function NewChatForm({ onCreated }: { onCreated: () => void }) {
@@ -30,7 +35,11 @@ export function NewChatForm({ onCreated }: { onCreated: () => void }) {
         autoFocus
         aria-invalid={error !== null}
       />
-      {error && <span className={styles.error} role="alert">{error}</span>}
+      {error && (
+        <span className={styles.error} role="alert">
+          {error}
+        </span>
+      )}
       <button>Начать чат</button>
     </form>
   )

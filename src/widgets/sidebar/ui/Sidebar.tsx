@@ -6,20 +6,40 @@ import type { Credentials } from '@/shared/api'
 import { formatTime } from '@/shared/lib'
 import styles from './Sidebar.module.css'
 
-export function Sidebar({ credentials, onLogout }: { credentials: Credentials; onLogout: () => void }) {
+export function Sidebar({
+  credentials,
+  onLogout,
+}: {
+  credentials: Credentials
+  onLogout: () => void
+}) {
   const { state, dispatch } = useChat()
   const [query, setQuery] = useState('')
   const [adding, setAdding] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
 
   const needle = query.trim().toLowerCase()
-  const chats = state.order.map((id) => state.chats[id]).filter((c) => c.title.toLowerCase().includes(needle))
+  const chats = state.order
+    .map((id) => state.chats[id])
+    .filter((c) => c.title.toLowerCase().includes(needle))
 
   return (
     <aside className={styles.sidebar}>
       <header className={styles.header}>
-        <input className={styles.search} placeholder="Поиск" value={query} onChange={(e) => setQuery(e.target.value)} />
-        <button className={styles.add} onClick={() => setAdding((v) => !v)} aria-label="Новый чат" title="Новый чат">+</button>
+        <input
+          className={styles.search}
+          placeholder="Поиск"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
+        <button
+          className={styles.add}
+          onClick={() => setAdding((v) => !v)}
+          aria-label="Новый чат"
+          title="Новый чат"
+        >
+          +
+        </button>
       </header>
 
       {adding && <NewChatForm onCreated={() => setAdding(false)} />}
@@ -49,14 +69,29 @@ export function Sidebar({ credentials, onLogout }: { credentials: Credentials; o
             </li>
           )
         })}
-        {chats.length === 0 && <li className={styles.empty}>{needle ? 'Ничего не найдено' : 'Нажмите «+», чтобы начать чат'}</li>}
+        {chats.length === 0 && (
+          <li className={styles.empty}>
+            {needle ? 'Ничего не найдено' : 'Нажмите «+», чтобы начать чат'}
+          </li>
+        )}
       </ul>
 
       <footer className={styles.footer}>
-        <button className={styles.settings} onClick={() => setSettingsOpen(true)} aria-label="Настройки" title="Настройки инстанса">⚙</button>
-        <button className={styles.logout} onClick={onLogout}>Выйти</button>
+        <button
+          className={styles.settings}
+          onClick={() => setSettingsOpen(true)}
+          aria-label="Настройки"
+          title="Настройки инстанса"
+        >
+          ⚙
+        </button>
+        <button className={styles.logout} onClick={onLogout}>
+          Выйти
+        </button>
       </footer>
-      {settingsOpen && <SettingsDialog credentials={credentials} onClose={() => setSettingsOpen(false)} />}
+      {settingsOpen && (
+        <SettingsDialog credentials={credentials} onClose={() => setSettingsOpen(false)} />
+      )}
     </aside>
   )
 }

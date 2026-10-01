@@ -1,13 +1,59 @@
-.window { display: flex; flex: 1; flex-direction: column; min-width: 0; background: #dbe9f7; }
-.placeholder { display: grid; flex: 1; place-items: center; color: var(--muted); background: #dbe9f7; }
-.header { display: flex; align-items: center; gap: 12px; padding: 10px 16px; background: var(--surface); border-bottom: 1px solid var(--border); }
+.window {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  background: #dbe9f7;
+}
+.placeholder {
+  display: grid;
+  flex: 1;
+  place-items: center;
+  color: var(--muted);
+  background: #dbe9f7;
+}
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
 .messages {
-  display: flex; flex: 1; flex-direction: column; gap: 6px; padding: 16px; overflow-y: auto;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px;
+  overflow-y: auto;
   background-image: radial-gradient(rgb(255 255 255 / 45%) 1.5px, transparent 1.5px);
   background-size: 22px 22px;
 }
-.bubble { display: flex; align-items: flex-end; gap: 10px; max-width: min(70%, 520px); padding: 8px 12px; border-radius: 16px; background: var(--surface); overflow-wrap: anywhere; white-space: pre-wrap; }
-.bubble time { flex-shrink: 0; font-size: 11px; color: var(--muted); }
-.bubble[data-direction='out'] { align-self: flex-end; background: var(--accent); color: #fff; }
-.bubble[data-direction='out'] time { color: rgb(255 255 255 / 75%); }
-.bubble[data-direction='in'] { align-self: flex-start; }
+.bubble {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  max-width: min(70%, 520px);
+  padding: 8px 12px;
+  border-radius: 16px;
+  background: var(--surface);
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.bubble time {
+  flex-shrink: 0;
+  font-size: 11px;
+  color: var(--muted);
+}
+.bubble[data-direction='out'] {
+  align-self: flex-end;
+  background: var(--accent);
+  color: #fff;
+}
+.bubble[data-direction='out'] time {
+  color: rgb(255 255 255 / 75%);
+}
+.bubble[data-direction='in'] {
+  align-self: flex-start;
+}

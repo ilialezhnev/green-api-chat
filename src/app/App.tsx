@@ -7,7 +7,15 @@ import { ChatWindow } from '@/widgets/chat-window'
 import { Sidebar } from '@/widgets/sidebar'
 import styles from './App.module.css'
 
-function Messenger({ credentials, onLogout, onAuthError }: { credentials: Credentials; onLogout: () => void; onAuthError: () => void }) {
+function Messenger({
+  credentials,
+  onLogout,
+  onAuthError,
+}: {
+  credentials: Credentials
+  onLogout: () => void
+  onAuthError: () => void
+}) {
   const { dispatch } = useChat()
   const { connectionLost } = useNotificationPolling(credentials, dispatch, onAuthError)
 

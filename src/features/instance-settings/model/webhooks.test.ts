@@ -10,9 +10,19 @@ describe('webhooks', () => {
   })
 
   it('sends only the toggles that changed', () => {
-    const original = toWebhookState({ incomingWebhook: 'yes', outgoingMessageWebhook: 'no', outgoingAPIMessageWebhook: 'no' })
+    const original = toWebhookState({
+      incomingWebhook: 'yes',
+      outgoingMessageWebhook: 'no',
+      outgoingAPIMessageWebhook: 'no',
+    })
     expect(changedWebhooks(original, original)).toEqual({})
-    expect(changedWebhooks(original, { ...original, incomingWebhook: false, outgoingMessageWebhook: true })).toEqual({
+    expect(
+      changedWebhooks(original, {
+        ...original,
+        incomingWebhook: false,
+        outgoingMessageWebhook: true,
+      }),
+    ).toEqual({
       incomingWebhook: 'no',
       outgoingMessageWebhook: 'yes',
     })

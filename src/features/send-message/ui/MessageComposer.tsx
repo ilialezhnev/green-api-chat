@@ -1,10 +1,21 @@
 import { useState, type FormEvent } from 'react'
 import { useChat } from '@/entities/chat'
 import { describeError, sendMessage, type Credentials } from '@/shared/api'
-import { MAX_MESSAGE_LENGTH, messageLength, sanitizeMessage, validateMessage } from '@/features/send-message/lib/message'
+import {
+  MAX_MESSAGE_LENGTH,
+  messageLength,
+  sanitizeMessage,
+  validateMessage,
+} from '@/features/send-message/lib/message'
 import styles from './MessageComposer.module.css'
 
-export function MessageComposer({ chatId, credentials }: { chatId: string; credentials: Credentials }) {
+export function MessageComposer({
+  chatId,
+  credentials,
+}: {
+  chatId: string
+  credentials: Credentials
+}) {
   const { dispatch } = useChat()
   const [text, setText] = useState('')
   const [sending, setSending] = useState(false)
@@ -37,7 +48,11 @@ export function MessageComposer({ chatId, credentials }: { chatId: string; crede
 
   return (
     <>
-      {error && <p className={styles.error} role="alert">{error}</p>}
+      {error && (
+        <p className={styles.error} role="alert">
+          {error}
+        </p>
+      )}
       <form className={styles.composer} onSubmit={handleSubmit}>
         <div className={styles.field}>
           <input
@@ -52,11 +67,17 @@ export function MessageComposer({ chatId, credentials }: { chatId: string; crede
             autoFocus
           />
           <div className={styles.hint}>
-            <span className={styles.validation} role="status">{validationError}</span>
-            <span data-over={length > MAX_MESSAGE_LENGTH}>{length}/{MAX_MESSAGE_LENGTH}</span>
+            <span className={styles.validation} role="status">
+              {validationError}
+            </span>
+            <span data-over={length > MAX_MESSAGE_LENGTH}>
+              {length}/{MAX_MESSAGE_LENGTH}
+            </span>
           </div>
         </div>
-        <button disabled={!canSend} aria-label="Отправить">➤</button>
+        <button disabled={!canSend} aria-label="Отправить">
+          ➤
+        </button>
       </form>
     </>
   )

@@ -8,7 +8,11 @@ const credentials = { idInstance: '1', apiTokenInstance: 't', apiUrl: '' }
 function Harness({ withMessage }: { withMessage?: boolean }) {
   const [state, dispatch] = useReducer(chatReducer, initialState, (s) => {
     if (!withMessage) return s
-    const chat = chatReducer(s, { type: 'createChat', chatId: '79876543210@c.us', phone: '79876543210' })
+    const chat = chatReducer(s, {
+      type: 'createChat',
+      chatId: '79876543210@c.us',
+      phone: '79876543210',
+    })
     return chatReducer(chat, {
       type: 'receiveMessage',
       chatId: '79876543210@c.us',

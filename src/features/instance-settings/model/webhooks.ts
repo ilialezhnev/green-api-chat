@@ -5,8 +5,16 @@ export type WebhookKey = 'incomingWebhook' | 'outgoingMessageWebhook' | 'outgoin
 /** The webhooks the chat needs to see messages; every other instance webhook is irrelevant to it. */
 export const WEBHOOKS: { key: WebhookKey; label: string; hint: string }[] = [
   { key: 'incomingWebhook', label: 'Входящие сообщения', hint: 'Ответы собеседников' },
-  { key: 'outgoingMessageWebhook', label: 'Отправленные с телефона', hint: 'Сообщения, написанные в Telegram на телефоне, в том числе в «Избранное»' },
-  { key: 'outgoingAPIMessageWebhook', label: 'Отправленные через API', hint: 'Сообщения из этого приложения (дубли отсекаются автоматически)' },
+  {
+    key: 'outgoingMessageWebhook',
+    label: 'Отправленные с телефона',
+    hint: 'Сообщения, написанные в Telegram на телефоне, в том числе в «Избранное»',
+  },
+  {
+    key: 'outgoingAPIMessageWebhook',
+    label: 'Отправленные через API',
+    hint: 'Сообщения из этого приложения (дубли отсекаются автоматически)',
+  },
 ]
 
 export type WebhookState = Record<WebhookKey, boolean>

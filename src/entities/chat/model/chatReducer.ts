@@ -32,7 +32,13 @@ export function chatReducer(state: ChatState, action: Action): ChatState {
       return {
         chats: {
           ...state.chats,
-          [action.chatId]: { id: action.chatId, title: `+${action.phone}`, phone: action.phone, messages: [], unread: 0 },
+          [action.chatId]: {
+            id: action.chatId,
+            title: `+${action.phone}`,
+            phone: action.phone,
+            messages: [],
+            unread: 0,
+          },
         },
         order: [action.chatId, ...state.order],
         activeId: action.chatId,
@@ -41,7 +47,11 @@ export function chatReducer(state: ChatState, action: Action): ChatState {
     case 'selectChat': {
       const chat = state.chats[action.chatId]
       if (!chat) return state
-      return { ...state, activeId: action.chatId, chats: { ...state.chats, [chat.id]: { ...chat, unread: 0 } } }
+      return {
+        ...state,
+        activeId: action.chatId,
+        chats: { ...state.chats, [chat.id]: { ...chat, unread: 0 } },
+      }
     }
     case 'addOutgoing': {
       const chat = state.chats[action.chatId]
@@ -50,7 +60,10 @@ export function chatReducer(state: ChatState, action: Action): ChatState {
       if (chat.messages.some((m) => m.id === action.message.id)) return state
       return {
         ...state,
-        chats: { ...state.chats, [chat.id]: { ...chat, messages: [...chat.messages, action.message] } },
+        chats: {
+          ...state.chats,
+          [chat.id]: { ...chat, messages: [...chat.messages, action.message] },
+        },
         order: [chat.id, ...state.order.filter((k) => k !== chat.id)],
       }
     }

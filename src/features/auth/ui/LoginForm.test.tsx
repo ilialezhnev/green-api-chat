@@ -27,7 +27,11 @@ describe('LoginForm', () => {
     const onLogin = vi.fn()
     render(<LoginForm onLogin={onLogin} />)
     await fill('7103', ' tok ')
-    expect(onLogin).toHaveBeenCalledWith({ idInstance: '7103', apiTokenInstance: 'tok', apiUrl: '' })
+    expect(onLogin).toHaveBeenCalledWith({
+      idInstance: '7103',
+      apiTokenInstance: 'tok',
+      apiUrl: '',
+    })
   })
 
   it('показывает понятную ошибку для неверных ключей и для сети', async () => {

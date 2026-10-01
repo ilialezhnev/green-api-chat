@@ -13,7 +13,11 @@ const credentials = { idInstance: '1', apiTokenInstance: 't', apiUrl: '' }
 
 describe('SettingsDialog', () => {
   it('shows current webhook state and saves only the changed toggle', async () => {
-    vi.mocked(getSettings).mockResolvedValue({ incomingWebhook: 'no', outgoingMessageWebhook: 'yes', outgoingAPIMessageWebhook: 'no' })
+    vi.mocked(getSettings).mockResolvedValue({
+      incomingWebhook: 'no',
+      outgoingMessageWebhook: 'yes',
+      outgoingAPIMessageWebhook: 'no',
+    })
     vi.mocked(setSettings).mockResolvedValue({ saveSettings: true })
     render(<SettingsDialog credentials={credentials} onClose={() => {}} />)
 

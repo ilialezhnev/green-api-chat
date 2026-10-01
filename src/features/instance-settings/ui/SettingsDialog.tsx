@@ -1,11 +1,25 @@
 import { useCallback, useEffect, useState } from 'react'
 import { describeError, getSettings, setSettings, type Credentials } from '@/shared/api'
-import { WEBHOOKS, changedWebhooks, toWebhookState, type WebhookState } from '@/features/instance-settings/model/webhooks'
+import {
+  WEBHOOKS,
+  changedWebhooks,
+  toWebhookState,
+  type WebhookState,
+} from '@/features/instance-settings/model/webhooks'
 import styles from './SettingsDialog.module.css'
 
-type Load = { status: 'loading' } | { status: 'error'; message: string } | { status: 'ready'; original: WebhookState; webhookUrl: string }
+type Load =
+  | { status: 'loading' }
+  | { status: 'error'; message: string }
+  | { status: 'ready'; original: WebhookState; webhookUrl: string }
 
-export function SettingsDialog({ credentials, onClose }: { credentials: Credentials; onClose: () => void }) {
+export function SettingsDialog({
+  credentials,
+  onClose,
+}: {
+  credentials: Credentials
+  onClose: () => void
+}) {
   const [load, setLoad] = useState<Load>({ status: 'loading' })
   const [draft, setDraft] = useState<WebhookState | null>(null)
   const [saving, setSaving] = useState(false)
@@ -49,7 +63,10 @@ export function SettingsDialog({ credentials, onClose }: { credentials: Credenti
       const { saveSettings } = await setSettings(credentials, changes)
       if (!saveSettings) throw new Error('not saved')
       setLoad({ ...load, original: draft })
-      setMessage({ kind: 'ok', text: 'Сохранено. Инстанс применяет настройки в течение нескольких минут.' })
+      setMessage({
+        kind: 'ok',
+        text: 'Сохранено. Инстанс применяет настройки в течение нескольких минут.',
+      })
     } catch (err) {
       setMessage({ kind: 'error', text: `Не удалось сохранить: ${describeError(err)}` })
     } finally {
@@ -59,9 +76,18 @@ export function SettingsDialog({ credentials, onClose }: { credentials: Credenti
 
   return (
     <div className={styles.backdrop} onClick={onClose}>
-      <div className={styles.dialog} role="dialog" aria-modal="true" aria-labelledby="settings-title" onClick={(e) => e.stopPropagation()}>
+      <div
+        className={styles.dialog}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="settings-title"
+        onClick={(e) => e.stopPropagation()}
+      >
         <h2 id="settings-title">Настройки инстанса</h2>
-        <p className={styles.hint}>Вебхуки, через которые приложение получает сообщения. Без них очередь уведомлений остаётся пустой.</p>
+        <p className={styles.hint}>
+          Вебхуки, через которые приложение получает сообщения. Без них очередь уведомлений остаётся
+          пустой.
+        </p>
 
         {load.status === 'loading' && <p role="status">Загружаем настройки…</p>}
 
@@ -83,8 +109,8 @@ export function SettingsDialog({ credentials, onClose }: { credentials: Credenti
           <>
             {load.webhookUrl && (
               <p className={styles.warning}>
-                Задан Webhook URL ({load.webhookUrl}): уведомления уходят на него, а не в очередь, и приложение ничего не получит.
-                Очистите его в консоли GREEN-API.
+                Задан Webhook URL ({load.webhookUrl}): уведомления уходят на него, а не в очередь, и
+                приложение ничего не получит. Очистите его в консоли GREEN-API.
               </p>
             )}
             <ul className={styles.list}>
@@ -111,11 +137,22 @@ export function SettingsDialog({ credentials, onClose }: { credentials: Credenti
           </>
         )}
 
-        {message && <p role={message.kind === 'error' ? 'alert' : 'status'} className={message.kind === 'error' ? styles.errorText : styles.ok}>{message.text}</p>}
+        {message && (
+          <p
+            role={message.kind === 'error' ? 'alert' : 'status'}
+            className={message.kind === 'error' ? styles.errorText : styles.ok}
+          >
+            {message.text}
+          </p>
+        )}
 
         <div className={styles.actions}>
-          <button className={styles.secondary} onClick={onClose}>Закрыть</button>
-          <button onClick={handleSave} disabled={!hasChanges || saving}>{saving ? 'Сохраняем…' : 'Сохранить'}</button>
+          <button className={styles.secondary} onClick={onClose}>
+            Закрыть
+          </button>
+          <button onClick={handleSave} disabled={!hasChanges || saving}>
+            {saving ? 'Сохраняем…' : 'Сохранить'}
+          </button>
         </div>
       </div>
     </div>
