@@ -1,0 +1,5 @@
+export { Avatar } from './ui/Avatar'
+export { ChatContext, useChat } from './model/chatContext'
+export { ChatProvider } from './model/ChatProvider'
+export { chatReducer, initialState, type Action } from './model/chatReducer'
+export type { Chat, ChatState, Message } from './model/types'

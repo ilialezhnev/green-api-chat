@@ -1,0 +1,11 @@
+.composer { display: flex; align-items: flex-start; gap: 10px; padding: 10px 16px; background: var(--surface); }
+.field { display: flex; flex: 1; flex-direction: column; gap: 4px; }
+.composer input { width: 100%; padding: 11px 16px; border: 0; border-radius: 22px; background: var(--bg); font-size: 15px; color: var(--text); }
+.composer input:focus { outline: 2px solid var(--accent); }
+.composer input[aria-invalid='true'] { outline: 2px solid var(--danger); }
+.composer button { width: 44px; height: 44px; border: 0; border-radius: 50%; background: var(--accent); color: #fff; font-size: 16px; cursor: pointer; }
+.composer button:disabled { opacity: 0.5; cursor: default; }
+.hint { display: flex; justify-content: space-between; gap: 12px; padding: 0 12px; font-size: 12px; color: var(--muted); }
+.hint [data-over='true'] { color: var(--danger); font-weight: 600; }
+.validation { color: var(--danger); }
+.error { margin: 0; padding: 8px 16px; background: var(--surface); font-size: 13px; color: var(--danger); }

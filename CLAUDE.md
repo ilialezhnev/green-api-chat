@@ -6,20 +6,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run dev` — dev-сервер Vite; `npm run build` — `tsc -b && vite build`; `npm run preview` — просмотр сборки
 - `npm run lint` — oxlint (конфиг [.oxlintrc.json](.oxlintrc.json))
 - `npm test` — Vitest однократно (jsdom, `globals: true`, setup в [src/test/setup.ts](src/test/setup.ts)); `npm run test:watch` — watch
-- Один файл: `npx vitest run src/state/chatReducer.test.ts`; один тест: `npx vitest run -t "часть названия"`
+- Один файл: `npx vitest run src/entities/chat/model/chatReducer.test.ts`; один тест: `npx vitest run -t "часть названия"`
 
 ## Архитектура (кратко)
-- Поток данных: [useNotificationPolling](src/hooks/useNotificationPolling.ts) → `receiveNotification` → `notificationToAction` ([notifications.ts](src/api/notifications.ts)) → `dispatch` → `deleteNotification` (удаляем всегда). Отправка: `sendMessage` → `addOutgoing`.
-- Вся логика сопоставления сообщений с чатами живёт в чистом [chatReducer.ts](src/state/chatReducer.ts): `chatId` → `phone@c.us` → `aliasId`; входящие идемпотентны по `message.id`. Менять её — только с тестами.
-- [greenApi.ts](src/api/greenApi.ts): все вызовы идут через `request<T>()` (кидает `ApiError` на не-2xx, пустое тело → `null`); URL строится в `buildUrl` (`{apiUrl}/waInstance{id}/{method}/{token}/...`, всё через `encodeURIComponent`).
-- Валидация и ошибки: [message.ts](src/utils/message.ts) (лимит 256, очистка невидимых символов, запрет HTML/скриптов), [phone.ts](src/utils/phone.ts) (маска `X XXX XXX-XX-XX`, ровно 11 цифр, 8→7), [credentials.ts](src/utils/credentials.ts); [errors.ts](src/api/errors.ts) `describeError` переводит любую ошибку запроса в текст для пользователя. Все запросы имеют таймаут (`request` в greenApi.ts); хук polling отдаёт `connectionLost` для баннера.
+- Поток данных: [useNotificationPolling](src/features/receive-messages/model/useNotificationPolling.ts) → `receiveNotification` → `notificationToAction` ([notifications.ts](src/features/receive-messages/lib/notifications.ts)) → `dispatch` → `deleteNotification` (удаляем всегда). Отправка: `sendMessage` → `addOutgoing`.
+- Вся логика сопоставления сообщений с чатами живёт в чистом [chatReducer.ts](src/entities/chat/model/chatReducer.ts): `chatId` → `phone@c.us` → `aliasId`; входящие идемпотентны по `message.id`. Менять её — только с тестами.
+- [greenApi.ts](src/shared/api/greenApi.ts): все вызовы идут через `request<T>()` (кидает `ApiError` на не-2xx, пустое тело → `null`); URL строится в `buildUrl` (`{apiUrl}/waInstance{id}/{method}/{token}/...`, всё через `encodeURIComponent`).
+- Валидация и ошибки: [message.ts](src/features/send-message/lib/message.ts) (лимит 256, очистка невидимых символов, запрет HTML/скриптов), [phone.ts](src/features/create-chat/lib/phone.ts) (маска `X XXX XXX-XX-XX`, ровно 11 цифр, 8→7), [credentials.ts](src/features/auth/model/credentials.ts); [errors.ts](src/shared/api/errors.ts) `describeError` переводит любую ошибку запроса в текст для пользователя. Все запросы имеют таймаут (`request` в greenApi.ts); хук polling отдаёт `connectionLost` для баннера.
 - `vite.config.ts`: `base: '/green-api-chat/'` только при `GITHUB_ACTIONS`, локально `/`.
 
 ## Проект
 GREEN-API chat — тестовое задание (Фронтенд разработчик React).
 
 ## Задача
-Простой React-UI для отправки и получения **только текстовых** сообщений через сервис GREEN-API. По ТЗ мессенджер MAX, допустима замена на WhatsApp/Telegram — **выбран Telegram** (у пользователя нет MAX). Внешний вид — как web.max.ru.
+Простой React-UI для отправки и получения **только текстовых** сообщений через сервис GREEN-API. По ТЗ мессенджер MAX, допустима замена на WhatsApp/Telegram — **выбран Telegram**. Внешний вид — как web.max.ru.
 
 ## Требования ТЗ
 1. React.
@@ -46,16 +46,17 @@ GREEN-API chat — тестовое задание (Фронтенд разра�
 - `POST {apiUrl}/waInstance{id}/sendMessage/{token}`, body `{chatId, message}` → `{idMessage}`
 - `GET .../receiveNotification/{token}?receiveTimeout=5..60` → `null` или `{receiptId, body:{typeWebhook:"incomingMessageReceived", senderData:{chatId,senderName,senderPhoneNumber}, messageData:{typeMessage:"textMessage", textMessageData:{textMessage}}}}`
 - `DELETE .../deleteNotification/{token}/{receiptId}` — обязательно после обработки, иначе придёт то же уведомление.
-- `chatId`: `79876543210@c.us` (по номеру) или числовой id; ответы приходят с числовым `chatId` → сопоставление с чатом по номеру телефона/`aliasId` (см. [chatReducer.ts](src/state/chatReducer.ts)).
-- Для polling в SetSettings нужно `webhookUrl: ""` и включённые `incomingWebhook`, `outgoingMessageWebhook` (сообщения с телефона), `outgoingAPIMessageWebhook` — всё `"yes"`; `outgoingWebhook` отвечает за статусы отправленных, приложению не нужен. Диалог настроек ([SettingsDialog.tsx](src/components/SettingsDialog.tsx), шестерёнка в сайдбаре) читает `getSettings` и через `setSettings` шлёт только изменённые переключатели; инстанс применяет их с задержкой в несколько минут.
+- `chatId`: `79876543210@c.us` (по номеру) или числовой id; ответы приходят с числовым `chatId` → сопоставление с чатом по номеру телефона/`aliasId` (см. [chatReducer.ts](src/entities/chat/model/chatReducer.ts)).
+- Для polling в SetSettings нужно `webhookUrl: ""` и включённые `incomingWebhook`, `outgoingMessageWebhook` (сообщения с телефона), `outgoingAPIMessageWebhook` — всё `"yes"`; `outgoingWebhook` отвечает за статусы отправленных, приложению не нужен. Диалог настроек ([SettingsDialog.tsx](src/features/instance-settings/ui/SettingsDialog.tsx), шестерёнка в сайдбаре) читает `getSettings` и через `setSettings` шлёт только изменённые переключатели; инстанс применяет их с задержкой в несколько минут.
 - CORS проверен (2026-09-29, curl с `Origin`, без ключей): `Access-Control-Allow-Origin: *`, preflight для POST и DELETE проходит → вызовы из браузера работают.
 
-## Структура
-- `src/api/` — клиент GREEN-API (`greenApi.ts`), разбор уведомлений (`notifications.ts`), ошибки (`errors.ts`), вебхуки инстанса (`webhooks.ts`), типы.
-- `src/state/` — чистый `chatReducer` (с тестами), `ChatProvider` (useReducer + персист), `chatContext.ts` (контекст и `useChat`), `storage.ts` (localStorage с валидацией). Ключи хранятся отдельно от чатов; выход очищает только ключи.
-- `src/hooks/` — `useNotificationPolling`.
-- `src/components/` — LoginForm, Sidebar (список чатов, новый чат), ChatWindow, SettingsDialog, Avatar (CSS Modules).
-- `src/utils/` — валидация и форматирование: `message.ts`, `phone.ts`, `credentials.ts`, `time.ts`.
+## Структура (урезанный Feature-Sliced Design)
+Слои сверху вниз: `app` → `widgets` → `features` → `entities` → `shared`. Слой импортирует только нижележащие; соседние слайсы одного слоя друг друга не импортируют. Слайс отдаёт наружу только свой `index.ts` (публичный API), внутрь чужого слайса не лезем. Внутри слайса сегменты `ui/`, `model/`, `lib/`; тесты лежат рядом с кодом. Импорты между слайсами — через алиас `@/` (= `src/`), внутри слайса — относительные. Слоя `pages` нет: экран один.
+- `app/` — `App.tsx` (вход ↔ мессенджер), `main.tsx`, глобальные стили.
+- `widgets/sidebar`, `widgets/chat-window` — композиция фич и сущностей в крупные блоки интерфейса.
+- `features/auth` (форма входа, проверка полей, хранение ключей), `create-chat` (форма нового чата, маска и проверка номера), `send-message` (композер, проверка текста), `receive-messages` (polling-хук, разбор уведомлений), `instance-settings` (диалог вебхуков).
+- `entities/chat` — редьюсер, типы, `ChatProvider`/`useChat`, хранение чатов, `Avatar`. Ключи и чаты лежат в `localStorage` отдельно; выход очищает только ключи.
+- `shared/api` — клиент GREEN-API, типы, `describeError`; `shared/lib` — `formatTime` и обёртки над `localStorage`.
 
 ## Статус
 Готово: вход, чаты, отправка и приём (polling), валидация, обработка ошибок, диалог настроек вебхуков, README, workflow для GitHub Pages ([.github/workflows/deploy.yml](.github/workflows/deploy.yml)). Проверено вживую на тестовом инстансе.
