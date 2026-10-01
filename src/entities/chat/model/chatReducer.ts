@@ -5,6 +5,7 @@ export const initialState: ChatState = { chats: {}, order: [], activeId: null };
 export type Action =
   | { type: 'createChat'; chatId: string; phone: string }
   | { type: 'selectChat'; chatId: string }
+  | { type: 'closeChat' }
   | { type: 'addOutgoing'; chatId: string; message: Message }
   | {
       type: 'receiveMessage';
@@ -53,6 +54,10 @@ export function chatReducer(state: ChatState, action: Action): ChatState {
         order: [action.chatId, ...state.order],
         activeId: action.chatId,
       };
+    }
+
+    case 'closeChat': {
+      return { ...state, activeId: null };
     }
 
     case 'selectChat': {

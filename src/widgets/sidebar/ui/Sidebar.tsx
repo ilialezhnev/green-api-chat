@@ -24,7 +24,8 @@ export function Sidebar({
     .filter((c) => c.title.toLowerCase().includes(needle));
 
   return (
-    <aside className={styles.sidebar}>
+    // On narrow screens an open chat shrinks the sidebar to an avatar rail (see the CSS).
+    <aside className={styles.sidebar} data-compact={state.activeId !== null}>
       <header className={styles.header}>
         <input
           className={styles.search}
@@ -53,11 +54,14 @@ export function Sidebar({
               <button
                 className={styles.item}
                 data-active={chat.id === state.activeId}
-                onClick={() => dispatch({ type: 'selectChat', chatId: chat.id })}
+                onClick={() => {
+                  setAdding(false);
+                  dispatch({ type: 'selectChat', chatId: chat.id });
+                }}
               >
                 <Avatar name={chat.title} />
                 <span className={styles.body}>
-                  <span className={styles.row}>
+                  <span className={`${styles.row} ${styles.titleRow}`}>
                     <b>{chat.title}</b>
                     {last && <time>{formatTime(last.timestamp)}</time>}
                   </span>

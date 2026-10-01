@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { useReducer } from 'react';
 import { ChatContext, chatReducer, initialState } from '@/entities/chat';
 import { ChatWindow } from './ChatWindow';
@@ -43,5 +44,14 @@ describe('ChatWindow', () => {
     expect(screen.getByText('+79876543210')).toBeInTheDocument();
     expect(screen.getByText('здравствуйте')).toBeInTheDocument();
     expect(screen.getByLabelText('Сообщение')).toBeInTheDocument();
+  });
+
+  it('кнопка «Назад» закрывает чат', async () => {
+    render(<Harness withMessage />);
+
+    await userEvent.click(screen.getByLabelText('Назад к списку чатов'));
+
+    expect(screen.getByText('Выберите чат или начните новый')).toBeInTheDocument();
+    expect(screen.queryByLabelText('Сообщение')).not.toBeInTheDocument();
   });
 });

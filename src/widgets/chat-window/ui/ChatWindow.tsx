@@ -6,7 +6,7 @@ import { formatTime } from '@/shared/lib';
 import styles from './ChatWindow.module.css';
 
 export function ChatWindow({ credentials }: { credentials: Credentials }) {
-  const { state } = useChat();
+  const { state, dispatch } = useChat();
   const chat = state.activeId ? state.chats[state.activeId] : null;
   const endRef = useRef<HTMLDivElement>(null);
   const messageCount = chat?.messages.length;
@@ -22,6 +22,13 @@ export function ChatWindow({ credentials }: { credentials: Credentials }) {
   return (
     <main className={styles.window}>
       <header className={styles.header}>
+        <button
+          className={styles.back}
+          onClick={() => dispatch({ type: 'closeChat' })}
+          aria-label="Назад к списку чатов"
+        >
+          ←
+        </button>
         <Avatar name={chat.title} />
         <b>{chat.title}</b>
       </header>

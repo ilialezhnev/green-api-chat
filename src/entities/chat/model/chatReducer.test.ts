@@ -71,4 +71,19 @@ describe('chatReducer', () => {
 
     expect(again.chats['79876543210@c.us'].messages).toHaveLength(1);
   });
+
+  it('закрывает чат, и ответы в нём снова считаются непрочитанными', () => {
+    const closed = chatReducer(created, { type: 'closeChat' });
+
+    expect(closed.activeId).toBeNull();
+    expect(closed.chats['79876543210@c.us']).toBeDefined();
+
+    const next = chatReducer(closed, {
+      type: 'receiveMessage',
+      chatId: '79876543210@c.us',
+      message: msg('late'),
+    });
+
+    expect(next.chats['79876543210@c.us'].unread).toBe(1);
+  });
 });

@@ -19,7 +19,7 @@
   border: 0;
   border-radius: 12px;
   background: var(--bg);
-  font-size: 14px;
+  font-size: 16px;
   color: var(--text);
 }
 
@@ -140,5 +140,39 @@
 @media (max-width: 720px) {
   .sidebar {
     width: 100%;
+  }
+
+  /* An open chat shrinks the list to a rail of avatars; the back arrow in the chat header restores it. */
+  .sidebar[data-compact='true'] {
+    width: 72px;
+  }
+
+  .sidebar[data-compact='true'] .header,
+  .sidebar[data-compact='true'] .footer,
+  .sidebar[data-compact='true'] .titleRow,
+  .sidebar[data-compact='true'] .preview {
+    display: none;
+  }
+
+  .sidebar[data-compact='true'] .item {
+    position: relative;
+    justify-content: center;
+    padding: 10px 0;
+  }
+
+  .sidebar[data-compact='true'] .body {
+    flex: 0;
+    width: 0;
+    min-width: 0;
+  }
+
+  .sidebar[data-compact='true'] .badge {
+    position: absolute;
+    top: 4px;
+    right: 8px;
+    min-width: 18px;
+    padding: 0 5px;
+    font-size: 11px;
+    line-height: 18px;
   }
 }

@@ -16,14 +16,17 @@ export function Messenger({ credentials, onLogout, onAuthError }: MessengerProps
   const { connectionLost } = useNotificationPolling(credentials, dispatch, onAuthError);
 
   return (
-    <div className={styles.layout}>
-      <Sidebar credentials={credentials} onLogout={onLogout} />
-      <ChatWindow credentials={credentials} />
+    <div className={styles.root}>
       {connectionLost && (
         <div className={styles.banner} role="status">
           Нет связи с GREEN-API. Повторяем попытку — новые сообщения могут прийти с задержкой.
         </div>
       )}
+
+      <div className={styles.layout}>
+        <Sidebar credentials={credentials} onLogout={onLogout} />
+        <ChatWindow credentials={credentials} />
+      </div>
     </div>
   );
 }
