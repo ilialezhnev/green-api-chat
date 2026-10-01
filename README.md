@@ -4,7 +4,18 @@
 
 - Демо: https://ilialezhnev.github.io/green-api-chat/
 - Репозиторий: https://github.com/ilialezhnev/green-api-chat
-- Скриншоты: _будут добавлены_
+
+## Скриншоты
+
+Данные на скриншотах вымышленные.
+
+| Вход | Чат (десктоп) |
+|---|---|
+| <img src="docs/screenshots/login.png" alt="Форма входа" width="400"> | <img src="docs/screenshots/chat-desktop.png" alt="Чат на десктопе" width="400"> |
+
+| Мобильная версия: список чатов | Мобильная версия: открытый чат |
+|---|---|
+| <img src="docs/screenshots/mobile-list.png" alt="Список чатов на мобильном" width="260"> | <img src="docs/screenshots/mobile-chat.png" alt="Открытый чат на мобильном" width="260"> |
 
 ## Возможности
 
