@@ -47,6 +47,7 @@ npm run dev
 | `npm run preview` | локальный просмотр собранной версии |
 | `npm test` | тесты (Vitest + React Testing Library) |
 | `npm run lint` | линтер (oxlint) |
+| `npm run format` | форматирование кода (Prettier); `npm run format:check` только проверяет |
 
 ## Как проверить работу
 
