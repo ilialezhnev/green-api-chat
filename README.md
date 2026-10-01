@@ -9,11 +9,19 @@
 
 Данные на скриншотах вымышленные.
 
-| Вход | Чат (десктоп) |
-|---|---|
-| <img src="docs/screenshots/login.png" alt="Форма входа" width="400"> | <img src="docs/screenshots/chat-desktop.png" alt="Чат на десктопе" width="400"> |
+**Десктоп**
 
-| Мобильная версия: список чатов | Мобильная версия: открытый чат |
+| Вход | Чат |
+|---|---|
+| <img src="docs/screenshots/login.png" alt="Форма входа" width="420"> | <img src="docs/screenshots/chat-desktop.png" alt="Чат на десктопе" width="420"> |
+| **Ошибки при входе** | **Лимит длины сообщения** |
+| <img src="docs/screenshots/desktop-login-errors.png" alt="Ошибки валидации формы входа" width="420"> | <img src="docs/screenshots/desktop-validation.png" alt="Счётчик символов и ошибка при превышении лимита" width="420"> |
+| **Новый чат: маска и проверка номера** | **Настройки вебхуков инстанса** |
+| <img src="docs/screenshots/desktop-new-chat.png" alt="Форма нового чата с маской номера" width="420"> | <img src="docs/screenshots/desktop-settings.png" alt="Диалог настроек вебхуков" width="420"> |
+
+**Мобильная версия**
+
+| Список чатов | Открытый чат |
 |---|---|
 | <img src="docs/screenshots/mobile-list.png" alt="Список чатов на мобильном" width="260"> | <img src="docs/screenshots/mobile-chat.png" alt="Открытый чат на мобильном" width="260"> |
 
